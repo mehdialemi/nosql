@@ -14,9 +14,9 @@ public class HBaseAPIs implements NoSqlClient {
 
     public final static String ZK_QUORUM = "127.0.0.1";
 
-    private Client client;
+    private HBaseClient HBaseClient;
     public HBaseAPIs() throws IOException {
-        client = new Client(ZK_QUORUM);
+        HBaseClient = new HBaseClient(ZK_QUORUM);
     }
 
     @GET
@@ -29,13 +29,13 @@ public class HBaseAPIs implements NoSqlClient {
     @Path("/put/emsInfo")
     @Consumes(MediaType.APPLICATION_JSON)
     public void add(EmsInfo emsInfo) throws IOException {
-        client.add(emsInfo);
+        HBaseClient.add(emsInfo);
     }
 
     @GET
     @Path("/get/emsIndo")
     @Produces(MediaType.APPLICATION_JSON)
     public EmsInfo getEmsInfo(long id) throws IOException {
-        return client.getEmsInfo(id);
+        return HBaseClient.getEmsInfo(id);
     }
 }

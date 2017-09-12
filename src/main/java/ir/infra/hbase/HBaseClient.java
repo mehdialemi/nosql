@@ -11,11 +11,11 @@ import java.io.IOException;
 /**
  * HBase client to insert objects into the hbase cluster.
  */
-public class Client implements NoSqlClient {
+public class HBaseClient implements NoSqlClient {
 
     EmsInfoDAO emsInfoDAO;
 
-    public Client(String zkQuorum) throws IOException {
+    public HBaseClient(String zkQuorum) throws IOException {
         Configuration conf = HBaseConfiguration.create();
         conf.set(HConstants.ZOOKEEPER_QUORUM, zkQuorum);
         emsInfoDAO = new EmsInfoDAO(conf);

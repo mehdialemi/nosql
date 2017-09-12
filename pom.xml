@@ -10,6 +10,7 @@
 
     <properties>
         <dropwizard.version>1.1.2</dropwizard.version>
+        <datastax.version>3.3.0</datastax.version>
     </properties>
 
     <dependencies>
@@ -18,20 +19,26 @@
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-core</artifactId>
             <version>${dropwizard.version}</version>
-
         </dependency>
 
+        <!-- cassandra dependencies -->
         <dependency>
             <groupId>com.datastax.cassandra</groupId>
             <artifactId>cassandra-driver-core</artifactId>
-            <version>3.3.0</version>
+            <version>${datastax.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-extras</artifactId>
+            <version>${datastax.version}</version>
         </dependency>
         <dependency>
             <groupId>com.datastax.cassandra</groupId>
             <artifactId>cassandra-driver-mapping</artifactId>
-            <version>3.0.0</version>
+            <version>${datastax.version}</version>
         </dependency>
 
+        <!-- hbase dependencies -->
         <dependency>
             <groupId>com.flipkart</groupId>
             <artifactId>hbase-object-mapper</artifactId>
@@ -46,6 +53,12 @@
                     <artifactId>jetty-util</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.9.1</version>
         </dependency>
 
         <dependency>

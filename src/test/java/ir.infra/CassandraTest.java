@@ -1,8 +1,10 @@
 package ir.infra;
 
-
-import ir.infra.cassandra.Client;
+import ir.infra.cassandra.CassandraClient;
 import ir.infra.tables.EmsInfo;
+import org.joda.time.Instant;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
 
 import java.net.UnknownHostException;
@@ -15,15 +17,16 @@ public class CassandraTest {
 
     @Test
     public void testEmsInfo() throws UnknownHostException {
-        Client client = new Client(COORDINATOR);
+        CassandraClient cassandraClient = new CassandraClient(COORDINATOR);
         EmsInfo emsInfo = new EmsInfo();
-        emsInfo.setEmsInfoId(1);
-        emsInfo.setAllowed(true);
-        emsInfo.setCarSpeed(10);
-        client.add(emsInfo);
-        EmsInfo result = client.getEmsInfo(1);
-        assertEquals(emsInfo.getEmsInfoId(), result.getEmsInfoId());
-        assertEquals(emsInfo.getAllowed(), result.getAllowed());
-        assertEquals(emsInfo.getCarSpeed(), result.getCarSpeed());
+        emsInfo.EmsInfoId = 4;
+        emsInfo.DeviceId = 10;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("YYYY-MM-DD HH:mm:ss");
+        emsInfo.PassDatetime = Instant.parse("2017-09-12 21:57:39", dateTimeFormatter);
+        cassandraClient.add(emsInfo);
+        EmsInfo result = cassandraClient.getEmsInfo(2);
+        assertEquals(2, result.EmsInfoId);
+        assertEquals(10, result.DeviceId);
+        assertEquals(emsInfo.PassDatetime, result.PassDatetime);
     }
 }

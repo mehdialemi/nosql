@@ -2,6 +2,7 @@ package ir.infra.cassandra;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.extras.codecs.joda.InstantCodec;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
 import ir.infra.NoSqlClient;
@@ -15,16 +16,20 @@ import java.net.UnknownHostException;
  * The configured keyspace is {@link Constants#KEY_SPACE} and all objects are inserted using
  * {@link MappingManager} class utility.
  */
-public class Client implements NoSqlClient {
+public class CassandraClient implements NoSqlClient {
 
     Mapper<EmsInfo> emsInfoMapper;
 
-    public Client(String coordinator) throws UnknownHostException {
+    public CassandraClient(String coordinator) throws UnknownHostException {
         Cluster cluster = Cluster.builder()
                 .addContactPoints(coordinator)
                 .build();
 
+        cluster.getConfiguration().getCodecRegistry()
+                .register(InstantCodec.instance);
+
         cluster.init();
+
         Session session = cluster.connect(Constants.KEY_SPACE);
 
         MappingManager mappingManager = new MappingManager(session);
@@ -36,8 +41,6 @@ public class Client implements NoSqlClient {
     }
 
     public EmsInfo getEmsInfo(long id) {
-        EmsInfo emsInfo = new EmsInfo();
-        emsInfo.setEmsInfoId(id);
-        return emsInfoMapper.get(emsInfo);
+        return emsInfoMapper.get(id);
     }
 }
