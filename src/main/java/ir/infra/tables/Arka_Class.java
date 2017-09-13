@@ -10,8 +10,7 @@ import static ir.infra.core.Constants.KEY_SPACE;
 public class Arka_Class {
 
     @PartitionKey
-    private
-    int Id;
+    public int Id;
 
     @Column
     private

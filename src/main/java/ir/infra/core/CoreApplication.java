@@ -21,6 +21,8 @@ public class CoreApplication extends Application<CoreConfiguration> {
     public void run(CoreConfiguration coreConfiguration, Environment environment) throws Exception {
         final CassandraAPIs cResource = new CassandraAPIs();
         environment.jersey().register(cResource);
+        environment.healthChecks().register("cassandra",
+                new CassandraHealthCheck(cResource.getCassandraClient()));
     }
 
     public static void main(String[] args) throws Exception {

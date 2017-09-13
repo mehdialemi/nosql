@@ -21,6 +21,10 @@ public class CassandraAPIs implements NoSqlClient {
         cassandraClient = new CassandraClient(COORDINATOR);
     }
 
+    public CassandraClient getCassandraClient() {
+        return cassandraClient;
+    }
+
     @GET
     @Path("/ping")
     public String ping(@QueryParam("input") String input) {
@@ -28,9 +32,10 @@ public class CassandraAPIs implements NoSqlClient {
     }
 
     @POST
-    @Path("/put/emsInfo")
+    @Path("/add/emsInfo")
     @Consumes(MediaType.APPLICATION_JSON)
     public void add(EmsInfo emsInfo) throws IOException {
+        System.out.println("Got new emsInfo: " + emsInfo);
         cassandraClient.add(emsInfo);
     }
 
@@ -38,6 +43,7 @@ public class CassandraAPIs implements NoSqlClient {
     @Path("/get/emsIndo")
     @Produces(MediaType.APPLICATION_JSON)
     public EmsInfo getEmsInfo(@QueryParam("id") long id) {
+        System.out.println("Getting emsInfo for id: " + id);
         return cassandraClient.getEmsInfo(id);
     }
 

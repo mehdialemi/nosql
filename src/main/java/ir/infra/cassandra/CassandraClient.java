@@ -18,6 +18,7 @@ import java.net.UnknownHostException;
  */
 public class CassandraClient implements NoSqlClient {
 
+    private final Session session;
     Mapper<EmsInfo> emsInfoMapper;
 
     public CassandraClient(String coordinator) throws UnknownHostException {
@@ -30,10 +31,14 @@ public class CassandraClient implements NoSqlClient {
 
         cluster.init();
 
-        Session session = cluster.connect(Constants.KEY_SPACE);
+        session = cluster.connect(Constants.KEY_SPACE);
 
         MappingManager mappingManager = new MappingManager(session);
         emsInfoMapper = mappingManager.mapper(EmsInfo.class);
+    }
+
+    public boolean isConnected() {
+        return !session.isClosed();
     }
 
     public void add(EmsInfo emsInfo) {

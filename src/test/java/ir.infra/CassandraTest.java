@@ -16,7 +16,7 @@ public class CassandraTest {
     private final static String COORDINATOR = "127.0.0.1";
 
     @Test
-    public void testEmsInfo() throws UnknownHostException {
+    public void testEmsInfoObjectMapper() throws UnknownHostException {
         CassandraClient cassandraClient = new CassandraClient(COORDINATOR);
         EmsInfo emsInfo = new EmsInfo();
         emsInfo.EmsInfoId = 4;
