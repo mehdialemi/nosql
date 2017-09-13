@@ -12,12 +12,14 @@ import java.io.IOException;
 @Produces(MediaType.APPLICATION_JSON)
 public class HBaseAPIs implements NoSqlClient {
 
-    public final static String ZK_QUORUM = "127.0.0.1";
+    public final static String ZK_QUORUM = "127.0.0.1:2181";
 
-    private HBaseClient HBaseClient;
+    private HBaseClient hbaseClient;
     public HBaseAPIs() throws IOException {
-        HBaseClient = new HBaseClient(ZK_QUORUM);
+        hbaseClient = new HBaseClient(ZK_QUORUM);
     }
+
+    public HBaseClient getHbaseClient() {return hbaseClient;}
 
     @GET
     @Path("/ping")
@@ -29,13 +31,13 @@ public class HBaseAPIs implements NoSqlClient {
     @Path("/put/emsInfo")
     @Consumes(MediaType.APPLICATION_JSON)
     public void add(EmsInfo emsInfo) throws IOException {
-        HBaseClient.add(emsInfo);
+        hbaseClient.add(emsInfo);
     }
 
     @GET
     @Path("/get/emsIndo")
     @Produces(MediaType.APPLICATION_JSON)
     public EmsInfo getEmsInfo(long id) throws IOException {
-        return HBaseClient.getEmsInfo(id);
+        return hbaseClient.getEmsInfo(id);
     }
 }

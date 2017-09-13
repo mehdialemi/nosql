@@ -21,6 +21,10 @@ public class HBaseClient implements NoSqlClient {
         emsInfoDAO = new EmsInfoDAO(conf);
     }
 
+    public boolean isConnected() {
+        return emsInfoDAO.isConnected();
+    }
+
     public void add(EmsInfo emsInfo) throws IOException {
         emsInfoDAO.persist(emsInfo);
     }

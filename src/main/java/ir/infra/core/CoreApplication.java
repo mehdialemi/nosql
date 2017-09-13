@@ -4,6 +4,7 @@ import ir.infra.cassandra.CassandraAPIs;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import ir.infra.hbase.HBaseAPIs;
 
 public class CoreApplication extends Application<CoreConfiguration> {
 
@@ -23,6 +24,12 @@ public class CoreApplication extends Application<CoreConfiguration> {
         environment.jersey().register(cResource);
         environment.healthChecks().register("cassandra",
                 new CassandraHealthCheck(cResource.getCassandraClient()));
+
+        final HBaseAPIs hResource = new HBaseAPIs();
+        environment.jersey().register(hResource);
+        environment.healthChecks().register("hbase",
+                new HBaseHealthCheck(hResource.getHbaseClient()));
+
     }
 
     public static void main(String[] args) throws Exception {

@@ -23,6 +23,10 @@ public class EmsInfoDAO extends AbstractHBDAO<Long, EmsInfo> {
         super(configuration);
     }
 
+    public boolean isConnected() {
+        return !connection.isClosed();
+    }
+
     @Override
     public List<Long> persist(List<? extends HBRecord<Long>> hbRecords) throws IOException {
 
