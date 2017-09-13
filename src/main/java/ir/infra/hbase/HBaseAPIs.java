@@ -28,7 +28,7 @@ public class HBaseAPIs implements NoSqlClient {
     }
 
     @POST
-    @Path("/put/emsInfo")
+    @Path("/add/emsInfo")
     @Consumes(MediaType.APPLICATION_JSON)
     public void add(EmsInfo emsInfo) throws IOException {
         hbaseClient.add(emsInfo);

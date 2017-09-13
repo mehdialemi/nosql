@@ -11,7 +11,7 @@
     <properties>
         <dropwizard.version>1.1.2</dropwizard.version>
         <datastax.version>3.3.0</datastax.version>
-        <hbase.version>1.2.6</hbase.version>
+        <hbase.version>1.3.1</hbase.version>
     </properties>
 
     <dependencies>
@@ -39,27 +39,38 @@
             <version>${datastax.version}</version>
         </dependency>
 
-        <!-- hbase dependencies -->
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>16.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.flipkart</groupId>
-            <artifactId>hbase-object-mapper</artifactId>
-            <version>1.7.1</version>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>${hbase.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>io.netty</groupId>
                     <artifactId>netty-all</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.mortbay.jetty</groupId>
-                    <artifactId>jetty-util</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
+        <!-- hbase dependencies -->
+        <!--<dependency>-->
+            <!--<groupId>com.google.guava</groupId>-->
+            <!--<artifactId>guava</artifactId>-->
+            <!--<version>16.0</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.flipkart</groupId>-->
+            <!--<artifactId>hbase-object-mapper</artifactId>-->
+            <!--<version>1.7.1</version>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>io.netty</groupId>-->
+                    <!--<artifactId>netty-all</artifactId>-->
+                <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>org.mortbay.jetty</groupId>-->
+                    <!--<artifactId>jetty-util</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>joda-time</groupId>

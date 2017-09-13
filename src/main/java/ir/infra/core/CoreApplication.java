@@ -20,6 +20,7 @@ public class CoreApplication extends Application<CoreConfiguration> {
 
     @Override
     public void run(CoreConfiguration coreConfiguration, Environment environment) throws Exception {
+
         final CassandraAPIs cResource = new CassandraAPIs();
         environment.jersey().register(cResource);
         environment.healthChecks().register("cassandra",
