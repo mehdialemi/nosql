@@ -1,3 +1,7 @@
+clusterConf:
+  zkAddress: localhost:2181
+  coordinator: localhost
+
 server:
   applicationConnectors:
     - type: http

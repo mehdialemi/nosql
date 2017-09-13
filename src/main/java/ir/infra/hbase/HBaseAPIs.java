@@ -15,7 +15,7 @@ public class HBaseAPIs implements NoSqlClient {
     public final static String ZK_QUORUM = "127.0.0.1:2181";
 
     private HBaseClient hbaseClient;
-    public HBaseAPIs() throws IOException {
+    public HBaseAPIs(String zkAddress) throws IOException {
         hbaseClient = new HBaseClient(ZK_QUORUM);
     }
 

@@ -17,8 +17,8 @@ public class CassandraAPIs implements NoSqlClient {
 
     private CassandraClient cassandraClient;
 
-    public CassandraAPIs() throws UnknownHostException {
-        cassandraClient = new CassandraClient(COORDINATOR);
+    public CassandraAPIs(String coordinator) throws UnknownHostException {
+        cassandraClient = new CassandraClient(coordinator);
     }
 
     public CassandraClient getCassandraClient() {
