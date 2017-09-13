@@ -26,7 +26,7 @@ public class CassandraTest {
         cassandraClient.add(emsInfo);
         EmsInfo result = cassandraClient.getEmsInfo(2);
         assertEquals(2, result.EmsInfoId);
-        assertEquals(10, result.DeviceId);
+        assertEquals(10, (int)result.DeviceId);
         assertEquals(emsInfo.PassDatetime, result.PassDatetime);
     }
 }

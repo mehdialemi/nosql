@@ -4,7 +4,7 @@ import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
 import com.flipkart.hbaseobjectmapper.*;
-import com.google.gson.Gson;
+import com.flipkart.hbaseobjectmapper.codec.BestSuitCodec;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.Instant;
 
@@ -23,47 +23,49 @@ public class EmsInfo implements HBRecord<Long> {
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "DeviceId")
-    public int DeviceId;
+    public Integer DeviceId;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "DeviceCompanySystemId")
-    public int DeviceCompanySystemId;
+    public Integer DeviceCompanySystemId;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "CompanyId")
-    public int CompanyId;
+    public Integer CompanyId;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "Line")
-    public int Line;
+    public Integer Line;
 
     @JsonProperty
-    @HBColumn(family = FAMILY, column = "PassDatetime")
+    @HBColumn(family = FAMILY, column = "PassDatetime",
+            codecFlags = {@Flag(name = BestSuitCodec.SERIALISE_AS_STRING, value = "true")})
     public Instant PassDatetime;
 
     @JsonProperty
-    @HBColumn(family = FAMILY, column = "ReceiveDateTime")
+    @HBColumn(family = FAMILY, column = "ReceiveDateTime",
+            codecFlags = {@Flag(name = BestSuitCodec.SERIALISE_AS_STRING, value = "true")})
     public Instant ReceiveDateTime;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "ImageScore")
-    public int ImageScore;
+    public Integer ImageScore;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "InvalidInfo")
-    public int InvalidInfo;
+    public Integer InvalidInfo;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "MasterPlateNumber")
-    public long MasterPlateNumber;
+    public Long MasterPlateNumber;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "SystemId")
-    public int SystemId;
+    public Integer SystemId;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "CarSpeed")
-    public int CarSpeed;
+    public Integer CarSpeed;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "RFIDNumber")
@@ -71,27 +73,27 @@ public class EmsInfo implements HBRecord<Long> {
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "ParkometerId")
-    public int ParkometerId;
+    public Integer ParkometerId;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "CrimeCode")
-    public int CrimeCode;
+    public Integer CrimeCode;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "Year")
-    public int Year;
+    public Integer Year;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "Month")
-    public byte Month;
+    public Byte Month;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "Date")
-    public long Date;
+    public Long Date;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "Inout")
-    public short Inout;
+    public Short Inout;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "ImagePath")
@@ -107,31 +109,31 @@ public class EmsInfo implements HBRecord<Long> {
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "Allowed")
-    public boolean Allowed;
+    public Boolean Allowed;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "AllowReasonId")
-    public int AllowReasonId;
+    public Integer AllowReasonId;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "SymfaAllowed")
-    public boolean SymfaAllowed;
+    public Boolean SymfaAllowed;
 
     @JsonProperty
-    @HBColumn(family = FAMILY, column = "SymfaEndDate")
+    @HBColumn(family = FAMILY, column = "SymfaEndDate", codecFlags = {@Flag(name = BestSuitCodec.SERIALISE_AS_STRING, value = "true")})
     public Instant SymfaEndDate;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "WrongDirection")
-    public int WrongDirection;
+    public Integer WrongDirection;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "IsSendToNaja")
-    public boolean IsSendToNaja;
+    public Boolean IsSendToNaja;
 
     @JsonProperty
     @HBColumn(family = FAMILY, column = "ValidForSms")
-    public boolean ValidForSms;
+    public Boolean ValidForSms;
 
     public EmsInfo() {
     }
@@ -142,41 +144,5 @@ public class EmsInfo implements HBRecord<Long> {
 
     public void parseRowKey(Long rowKey) {
         EmsInfoId = rowKey;
-    }
-
-    public static void main(String[] args) {
-        Gson gson = new Gson();
-        EmsInfo emsInfo = new EmsInfo();
-        emsInfo.EmsInfoId = 100;
-        emsInfo.PassDatetime = Instant.now();
-        emsInfo.DeviceId = 20;
-        emsInfo.Allowed = true;
-        emsInfo.CarSpeed = 130;
-        emsInfo.AllowReasonId = 22;
-        emsInfo.CompanyId = 320;
-        emsInfo.CrimeCode = 41;
-        emsInfo.Date = System.currentTimeMillis();
-        emsInfo.DeviceCompanySystemId = 32;
-        emsInfo.ImageBWPath = "bwPath";
-        emsInfo.ImagePath = "imgPath";
-        emsInfo.ImageScore = 2;
-        emsInfo.Inout = 20;
-        emsInfo.InvalidInfo = 64;
-        emsInfo.IsSendToNaja = true;
-        emsInfo.Line = 4;
-        emsInfo.MasterPlateNumber = 53;
-        emsInfo.PlateImagePath = "platePath";
-        emsInfo.Month = 3;
-        emsInfo.ReceiveDateTime = Instant.now();
-        emsInfo.ParkometerId = 54;
-        emsInfo.RFIDNumber = "24";
-        emsInfo.SymfaAllowed = false;
-        emsInfo.SymfaEndDate = Instant.now();
-        emsInfo.SystemId = 35;
-        emsInfo.ValidForSms = false;
-        emsInfo.WrongDirection = 2;
-        emsInfo.Year = 1397;
-        String json = gson.toJson(emsInfo);
-        System.out.println(json);
     }
 }
