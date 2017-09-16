@@ -13,8 +13,6 @@ import java.net.UnknownHostException;
 @Produces(MediaType.APPLICATION_JSON)
 public class CassandraAPIs implements NoSqlClient {
 
-    public static final String COORDINATOR = "127.0.0.1";
-
     private CassandraClient cassandraClient;
 
     public CassandraAPIs(String coordinator) throws UnknownHostException {
@@ -46,6 +44,4 @@ public class CassandraAPIs implements NoSqlClient {
         System.out.println("Getting emsInfo for id: " + id);
         return cassandraClient.getEmsInfo(id);
     }
-
-
 }

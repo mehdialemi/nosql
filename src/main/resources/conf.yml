@@ -8,7 +8,7 @@ server:
   applicationConnectors:
     - type: http
       port: 8080
-      bindHost: 127.0.0.1 # only bind to loopback
+      bindHost: 0.0.0.0 # only bind to loopback
       inheritChannel: false
       headerCacheSize: 512 bytes
       outputBufferSize: 32KiB
