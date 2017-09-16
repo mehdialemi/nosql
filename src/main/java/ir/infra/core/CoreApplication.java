@@ -21,15 +21,19 @@ public class CoreApplication extends Application<CoreConfiguration> {
     @Override
     public void run(CoreConfiguration conf, Environment environment) throws Exception {
 
-        final CassandraAPIs cResource = new CassandraAPIs(conf.getClusterConf().getCoordinator());
-        environment.jersey().register(cResource);
-        environment.healthChecks().register("cassandra",
-                new CassandraHealthCheck(cResource.getCassandraClient()));
+        if (conf.getClusterConf().isEnable_cassandra()) {
+            final CassandraAPIs cResource = new CassandraAPIs(conf.getClusterConf().getCoordinator());
+            environment.jersey().register(cResource);
+            environment.healthChecks().register("cassandra",
+                    new CassandraHealthCheck(cResource.getCassandraClient()));
+        }
 
-        final HBaseAPIs hResource = new HBaseAPIs(conf.getClusterConf().getZkAddress());
-        environment.jersey().register(hResource);
-        environment.healthChecks().register("hbase",
-                new HBaseHealthCheck(hResource.getHbaseClient()));
+        if (conf.getClusterConf().isEnable_hbase()) {
+            final HBaseAPIs hResource = new HBaseAPIs(conf.getClusterConf().getZkAddress());
+            environment.jersey().register(hResource);
+            environment.healthChecks().register("hbase",
+                    new HBaseHealthCheck(hResource.getHbaseClient()));
+        }
 
     }
 

@@ -8,6 +8,10 @@ public class ClusterConf {
 
     private String coordinator = "localhost";
 
+    private boolean enable_hbase = true;
+
+    private boolean enable_cassandra = true;
+
     @JsonProperty
     public String getZkAddress() {
         return zkAddress;
@@ -26,5 +30,26 @@ public class ClusterConf {
     @JsonProperty
     public void setCoordinator(String coordinator) {
         this.coordinator = coordinator;
+    }
+
+
+    @JsonProperty
+    public boolean isEnable_hbase() {
+        return enable_hbase;
+    }
+
+    @JsonProperty
+    public void setEnable_hbase(boolean enable_hbase) {
+        this.enable_hbase = enable_hbase;
+    }
+
+    @JsonProperty
+    public boolean isEnable_cassandra() {
+        return enable_cassandra;
+    }
+
+    @JsonProperty
+    public void setEnable_cassandra(boolean enable_cassandra) {
+        this.enable_cassandra = enable_cassandra;
     }
 }

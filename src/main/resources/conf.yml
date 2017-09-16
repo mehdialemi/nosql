@@ -1,6 +1,8 @@
 clusterConf:
   zkAddress: localhost:2181
   coordinator: localhost
+  enable_hbase: true
+  enable_cassandra: true
 
 server:
   applicationConnectors:
