@@ -34,7 +34,6 @@ public class CoreApplication extends Application<CoreConfiguration> {
             environment.healthChecks().register("hbase",
                     new HBaseHealthCheck(hResource.getHbaseClient()));
         }
-
     }
 
     public static void main(String[] args) throws Exception {
