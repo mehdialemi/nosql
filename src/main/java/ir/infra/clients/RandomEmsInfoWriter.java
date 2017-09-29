@@ -10,6 +10,7 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.routing.HttpRoutePlanner;
@@ -21,12 +22,15 @@ import org.apache.http.impl.conn.DefaultSchemePortResolver;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.LoggerFactory;
 
+import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Writes EmsInfo objects into the database by calling the provided REST services.
  */
 public class RandomEmsInfoWriter {
+
+    public static final int MB = 1024 * 1024;
 
     public static void main(String[] args) throws Exception {
         final String hostname = args[0];
@@ -62,9 +66,18 @@ public class RandomEmsInfoWriter {
             }
         };
 
+        final SocketConfig socketConfig = SocketConfig.custom()
+                .setSndBufSize(500 * MB)
+                .setTcpNoDelay(true)
+                .setSoKeepAlive(true)
+                .build();
+
         CloseableHttpClient client = HttpClients.custom()
                 .setRoutePlanner(rp)
                 .setKeepAliveStrategy(keepAliveStrategy)
+                .setDefaultSocketConfig(socketConfig)
+                .setConnectionManagerShared(true)
+                .setConnectionTimeToLive(10, TimeUnit.SECONDS)
                 .build();
 
         MetricRegistry registry = new MetricRegistry();
@@ -84,7 +97,7 @@ public class RandomEmsInfoWriter {
         Thread.sleep(testDuration * 1000);
 
         clientWriters.stop();
-;
+
         client.close();
     }
 }

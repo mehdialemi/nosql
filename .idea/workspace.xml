@@ -5,9 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cba4959-49a1-40e5-abcc-0a6f507fc8c2" name="Default" comment="commit">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/ir/infra/clients/ClientWriters.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/run-client.sh" afterPath="$PROJECT_DIR$/bin/run-client.sh" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ir/infra/clients/RandomEmsInfoWriter.java" afterPath="$PROJECT_DIR$/src/main/java/ir/infra/clients/RandomEmsInfoWriter.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
@@ -78,8 +75,8 @@
       <file leaf-file-name="RandomEmsInfoWriter.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/ir/infra/clients/RandomEmsInfoWriter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="84" column="0" lean-forward="true" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
+            <state relative-caret-position="205">
+              <caret line="79" column="62" lean-forward="false" selection-start-line="79" selection-start-column="62" selection-end-line="79" selection-end-column="62" />
               <folding />
             </state>
           </provider>
@@ -546,6 +543,9 @@
     <property name="add_unversioned_files" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="ir.infra.clients.RandomEmsInfoWriter" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/bin" />
     </key>
@@ -1477,8 +1477,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/ir/infra/clients/RandomEmsInfoWriter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="84" column="0" lean-forward="true" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
+        <state relative-caret-position="205">
+          <caret line="79" column="62" lean-forward="false" selection-start-line="79" selection-start-column="62" selection-end-line="79" selection-end-column="62" />
           <folding />
         </state>
       </provider>
