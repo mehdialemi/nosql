@@ -5,6 +5,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.extras.codecs.joda.InstantCodec;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
+import ir.infra.core.ClusterConf;
 import ir.infra.core.Constants;
 import ir.infra.tables.EmsInfo;
 
@@ -20,9 +21,9 @@ public class CassandraClient {
     private final Session session;
     Mapper<EmsInfo> emsInfoMapper;
 
-    public CassandraClient(String coordinator) throws UnknownHostException {
+    public CassandraClient(ClusterConf conf) throws UnknownHostException {
         Cluster cluster = Cluster.builder()
-                .addContactPoints(coordinator)
+                .addContactPoints(conf.getCoordinator())
                 .build();
 
         cluster.getConfiguration().getCodecRegistry()
@@ -30,7 +31,10 @@ public class CassandraClient {
 
         cluster.init();
 
-        session = cluster.connect(Constants.KEY_SPACE);
+        if (conf.isEnable_test())
+            session = cluster.connect(Constants.TEST_KEY_SPACE);
+        else
+            session = cluster.connect(Constants.KEY_SPACE);
 
         MappingManager mappingManager = new MappingManager(session);
         emsInfoMapper = mappingManager.mapper(EmsInfo.class);

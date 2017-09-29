@@ -6,6 +6,7 @@ package ir.infra.core;
 public class Constants {
 
     public final static String KEY_SPACE = "traffic";
+    public final static String TEST_KEY_SPACE = "traffic_test";
 
     /**
      * HBase default column family for each table. 'm' stands for 'main'

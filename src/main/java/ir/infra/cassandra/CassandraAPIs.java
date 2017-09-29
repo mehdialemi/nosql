@@ -19,7 +19,7 @@ public class CassandraAPIs extends NoSqlAPI {
 
     public CassandraAPIs(ClusterConf conf) throws UnknownHostException {
         super(conf);
-        cassandraClient = new CassandraClient(conf.getCoordinator());
+        cassandraClient = new CassandraClient(conf);
     }
 
     public CassandraClient getCassandraClient() {

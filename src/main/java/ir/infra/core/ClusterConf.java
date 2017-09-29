@@ -15,6 +15,8 @@ public class ClusterConf {
 
     private int reportPeriod = 10;
 
+    private boolean enable_test = true;
+
     private MetricRegistry metricRegistry;
 
     @JsonProperty
@@ -72,5 +74,13 @@ public class ClusterConf {
 
     public void setMetricRegistry(MetricRegistry metricRegistry) {
         this.metricRegistry = metricRegistry;
+    }
+
+    public boolean isEnable_test() {
+        return enable_test;
+    }
+
+    public void setEnable_test(boolean enable_test) {
+        this.enable_test = enable_test;
     }
 }
