@@ -1,7 +1,5 @@
 package ir.infra.hbase;
 
-import ir.infra.NoSqlClient;
-import ir.infra.core.ClusterConf;
 import ir.infra.tables.EmsInfo;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;

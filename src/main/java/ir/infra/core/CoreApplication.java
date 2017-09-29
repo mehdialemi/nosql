@@ -1,14 +1,10 @@
 package ir.infra.core;
 
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricRegistry;
-import ir.infra.cassandra.CassandraAPIs;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import ir.infra.cassandra.CassandraAPIs;
 import ir.infra.hbase.HBaseAPIs;
-
-import java.util.Map;
 
 public class CoreApplication extends Application<CoreConfiguration> {
 
