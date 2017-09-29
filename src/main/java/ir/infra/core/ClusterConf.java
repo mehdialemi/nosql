@@ -1,5 +1,6 @@
 package ir.infra.core;
 
+import com.codahale.metrics.MetricRegistry;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ClusterConf {
@@ -11,6 +12,10 @@ public class ClusterConf {
     private boolean enable_hbase = true;
 
     private boolean enable_cassandra = true;
+
+    private int reportPeriod = 10;
+
+    private MetricRegistry metricRegistry;
 
     @JsonProperty
     public String getZkAddress() {
@@ -51,5 +56,21 @@ public class ClusterConf {
     @JsonProperty
     public void setEnable_cassandra(boolean enable_cassandra) {
         this.enable_cassandra = enable_cassandra;
+    }
+
+    public int getReportPeriod() {
+        return reportPeriod;
+    }
+
+    public void setReportPeriod(int reportPeriod) {
+        this.reportPeriod = reportPeriod;
+    }
+
+    public MetricRegistry getMetricRegistry() {
+        return metricRegistry;
+    }
+
+    public void setMetricRegistry(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
     }
 }

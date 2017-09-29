@@ -7,7 +7,7 @@ import sun.misc.BASE64Encoder;
 import java.util.Random;
 
 /**
- * Created by mehdi on 9/29/17.
+ * Generate random {@link EmsInfo} objects
  */
 public class RandomEmsInfoGenerator {
 
@@ -26,10 +26,6 @@ public class RandomEmsInfoGenerator {
 
     public static String toJson(EmsInfo emsInfo) {
         return gson.toJson(emsInfo);
-    }
-
-    public static String randomEmsInfoJson(long id) {
-        return toJson(randomEmsInfo(id));
     }
 
     public static String randomEmsInfoJson() {

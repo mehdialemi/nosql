@@ -16,7 +16,7 @@ import java.net.UnknownHostException;
  * The configured keyspace is {@link Constants#KEY_SPACE} and all objects are inserted using
  * {@link MappingManager} class utility.
  */
-public class CassandraClient implements NoSqlClient {
+public class CassandraClient {
 
     private final Session session;
     Mapper<EmsInfo> emsInfoMapper;

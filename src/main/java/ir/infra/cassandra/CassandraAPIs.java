@@ -1,25 +1,25 @@
 package ir.infra.cassandra;
 
 
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.annotation.Metered;
-import com.codahale.metrics.annotation.Timed;
 import ir.infra.NoSqlClient;
+import ir.infra.core.ClusterConf;
 import ir.infra.tables.EmsInfo;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 @Path("cassandra")
 @Produces(MediaType.APPLICATION_JSON)
-public class CassandraAPIs implements NoSqlClient {
+public class CassandraAPIs extends NoSqlClient {
 
     private CassandraClient cassandraClient;
 
-    public CassandraAPIs(String coordinator) throws UnknownHostException {
-        cassandraClient = new CassandraClient(coordinator);
+    public CassandraAPIs(ClusterConf conf) throws UnknownHostException {
+        super(conf);
+        cassandraClient = new CassandraClient(conf.getCoordinator());
     }
 
     public CassandraClient getCassandraClient() {
@@ -32,21 +32,24 @@ public class CassandraAPIs implements NoSqlClient {
         return input;
     }
 
-    @Metered
-    @Timed
     @POST
     @Path("/add/emsInfo")
     @Consumes(MediaType.APPLICATION_JSON)
     public void add(EmsInfo emsInfo) throws IOException {
+        long t1 = System.nanoTime();
         cassandraClient.add(emsInfo);
+        long duration = System.nanoTime() - t1;
+        addTimer.update(duration, TimeUnit.NANOSECONDS);
     }
 
-    @Metered
-    @Timed
     @GET
     @Path("/get/emsInfo")
     @Produces(MediaType.APPLICATION_JSON)
     public EmsInfo getEmsInfo(@QueryParam("id") long id) {
-        return cassandraClient.getEmsInfo(id);
+        long t1 = System.nanoTime();
+        EmsInfo result = cassandraClient.getEmsInfo(id);
+        long duration = System.nanoTime() - t1;
+        getTimer.update(duration, TimeUnit.NANOSECONDS);
+        return result;
     }
 }

@@ -92,8 +92,8 @@ public class RandomEmsInfoWriter {
             }
 
             long t2 = System.nanoTime();
-            long duration = (t2 - t1) / 1000000;
-            timer.update(duration, TimeUnit.MILLISECONDS);
+            long duration = t2 - t1;
+            timer.update(duration, TimeUnit.NANOSECONDS);
         }
 
         client.close();

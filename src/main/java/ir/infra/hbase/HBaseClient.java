@@ -1,6 +1,7 @@
 package ir.infra.hbase;
 
 import ir.infra.NoSqlClient;
+import ir.infra.core.ClusterConf;
 import ir.infra.tables.EmsInfo;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -11,13 +12,13 @@ import java.io.IOException;
 /**
  * HBase client to insert objects into the hbase cluster.
  */
-public class HBaseClient implements NoSqlClient {
+public class HBaseClient {
 
     EmsInfoDAO emsInfoDAO;
 
-    public HBaseClient(String zkQuorum) throws IOException {
+    public HBaseClient(String zkAddress) throws IOException {
         Configuration conf = HBaseConfiguration.create();
-        conf.set(HConstants.ZOOKEEPER_QUORUM, zkQuorum);
+        conf.set(HConstants.ZOOKEEPER_QUORUM, zkAddress);
         emsInfoDAO = new EmsInfoDAO(conf);
     }
 

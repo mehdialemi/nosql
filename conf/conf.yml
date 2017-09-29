@@ -3,10 +3,7 @@ clusterConf:
   coordinator: localhost
   enable_hbase: false
   enable_cassandra: true
-
-metrics:
-  reporters:
-  - type: console
+  reportPeriod: 10
 
 server:
   applicationConnectors:
