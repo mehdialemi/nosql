@@ -16,7 +16,7 @@ import static ir.infra.core.Constants.KEY_SPACE;
 import static ir.infra.core.Constants.FAMILY;
 
 
-@Table(keyspace = KEY_SPACE, name = "EmsInfo")
+@Table(name = "EmsInfo")
 public class EmsInfo {
 
     public static final byte[] FAMILY_BYTES = toBytes(FAMILY);

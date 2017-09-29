@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cba4959-49a1-40e5-abcc-0a6f507fc8c2" name="Default" comment="commit">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf/nosql.yml" afterPath="$PROJECT_DIR$/conf/nosql.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ir/infra/cassandra/CassandraClient.java" afterPath="$PROJECT_DIR$/src/main/java/ir/infra/cassandra/CassandraClient.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfo.java" afterPath="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfo.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,18 +18,6 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="NoSqlAPI.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/ir/infra/NoSqlAPI.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
@@ -114,11 +100,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CassandraClient.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CassandraClient.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/ir/infra/cassandra/CassandraClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+            <state relative-caret-position="414">
+              <caret line="43" column="50" lean-forward="true" selection-start-line="43" selection-start-column="50" selection-end-line="43" selection-end-column="50" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EmsInfo.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="18" column="24" lean-forward="true" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -212,7 +208,6 @@
         <option value="$PROJECT_DIR$/src/test/java/ir.infra/HBaseTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/ir/infra/core/HBaseHealthCheck.java" />
         <option value="$PROJECT_DIR$/src/main/java/ir/infra/hbase/EmsInfoDAO.java" />
-        <option value="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfo.java" />
         <option value="$PROJECT_DIR$/src/main/java/ir/infra/core/ClusterConfigurations.java" />
         <option value="$PROJECT_DIR$/src/main/java/ir/infra/core/CoreConfiguration.java" />
         <option value="$PROJECT_DIR$/src/main/resources/conf.yml" />
@@ -237,6 +232,7 @@
         <option value="$PROJECT_DIR$/src/main/java/ir/infra/core/Constants.java" />
         <option value="$PROJECT_DIR$/src/main/java/ir/infra/cassandra/CassandraAPIs.java" />
         <option value="$PROJECT_DIR$/src/main/java/ir/infra/cassandra/CassandraClient.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfo.java" />
       </list>
     </option>
   </component>
@@ -1119,13 +1115,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfo.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1386">
-          <caret line="90" column="4" lean-forward="false" selection-start-line="90" selection-start-column="4" selection-end-line="90" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/ir/infra/tables/Hotel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
@@ -1246,6 +1235,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
           <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+          <folding>
+            <element signature="e#797#798#0" expanded="true" />
+            <element signature="e#860#861#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1440,8 +1433,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/ir/infra/cassandra/CassandraClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+        <state relative-caret-position="414">
+          <caret line="43" column="50" lean-forward="true" selection-start-line="43" selection-start-column="50" selection-end-line="43" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="18" column="24" lean-forward="true" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
           <folding />
         </state>
       </provider>
