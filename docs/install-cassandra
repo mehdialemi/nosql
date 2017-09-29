@@ -1,8 +1,8 @@
 
-# mv /etc/apt/sources.list.d/cassandra.sources.list /etc/apt/sources.list.d/cassandra.sources.list.bak
-# echo "deb http://archive.yooz.ir/apache/cassandra/debian/ 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
-# echo "deb-src http://archive.yooz.ir/apache/cassandra/debian/ 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
-# curl http://archive.yooz.ir/apache/cassandra/KEYS | sudo apt-key add -
-# apt-get update
-# apt-get install curl
-# apt-get install cassandra
+apt-get install curl
+mv /etc/apt/sources.list.d/cassandra.sources.list /etc/apt/sources.list.d/cassandra.sources.list.bak
+echo "deb http://archive.yooz.ir/apache/cassandra/debian/ 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
+echo "deb-src http://archive.yooz.ir/apache/cassandra/debian/ 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
+curl http://archive.yooz.ir/apache/cassandra/KEYS | sudo apt-key add -
+apt-get update
+apt-get install cassandra

@@ -1,0 +1,15 @@
+clusterConf:
+  zkAddress: localhost:2181
+  coordinator: localhost
+  enable_hbase: false
+  enable_cassandra: true
+
+metrics:
+  reporters:
+  - type: console
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+      bindHost: 0.0.0.0 # only bind to loopback

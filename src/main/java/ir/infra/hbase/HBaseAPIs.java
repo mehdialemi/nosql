@@ -1,5 +1,7 @@
 package ir.infra.hbase;
 
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 import ir.infra.NoSqlClient;
 import ir.infra.tables.EmsInfo;
 
@@ -27,6 +29,8 @@ public class HBaseAPIs implements NoSqlClient {
         return input;
     }
 
+    @Timed
+    @Metered
     @POST
     @Path("/add/emsInfo")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -34,8 +38,10 @@ public class HBaseAPIs implements NoSqlClient {
         hbaseClient.add(emsInfo);
     }
 
+    @Timed
+    @Metered
     @GET
-    @Path("/get/emsIndo")
+    @Path("/get/emsInfo")
     @Produces(MediaType.APPLICATION_JSON)
     public EmsInfo getEmsInfo(long id) throws IOException {
         return hbaseClient.getEmsInfo(id);

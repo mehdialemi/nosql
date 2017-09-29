@@ -1,6 +1,9 @@
 package ir.infra.cassandra;
 
 
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.annotation.Metered;
+import com.codahale.metrics.annotation.Timed;
 import ir.infra.NoSqlClient;
 import ir.infra.tables.EmsInfo;
 
@@ -29,19 +32,21 @@ public class CassandraAPIs implements NoSqlClient {
         return input;
     }
 
+    @Metered
+    @Timed
     @POST
     @Path("/add/emsInfo")
     @Consumes(MediaType.APPLICATION_JSON)
     public void add(EmsInfo emsInfo) throws IOException {
-        System.out.println("Got new emsInfo: " + emsInfo);
         cassandraClient.add(emsInfo);
     }
 
+    @Metered
+    @Timed
     @GET
-    @Path("/get/emsIndo")
+    @Path("/get/emsInfo")
     @Produces(MediaType.APPLICATION_JSON)
     public EmsInfo getEmsInfo(@QueryParam("id") long id) {
-        System.out.println("Getting emsInfo for id: " + id);
         return cassandraClient.getEmsInfo(id);
     }
 }

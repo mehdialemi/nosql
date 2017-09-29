@@ -1,10 +1,14 @@
 package ir.infra.core;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Slf4jReporter;
 import ir.infra.cassandra.CassandraAPIs;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import ir.infra.hbase.HBaseAPIs;
+
+import java.util.concurrent.TimeUnit;
 
 public class CoreApplication extends Application<CoreConfiguration> {
 
@@ -34,6 +38,7 @@ public class CoreApplication extends Application<CoreConfiguration> {
             environment.healthChecks().register("hbase",
                     new HBaseHealthCheck(hResource.getHbaseClient()));
         }
+
     }
 
     public static void main(String[] args) throws Exception {
