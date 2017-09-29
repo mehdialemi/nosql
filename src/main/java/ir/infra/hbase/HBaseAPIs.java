@@ -1,6 +1,6 @@
 package ir.infra.hbase;
 
-import ir.infra.NoSqlClient;
+import ir.infra.NoSqlAPI;
 import ir.infra.core.ClusterConf;
 import ir.infra.tables.EmsInfo;
 
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @Path("hbase")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class HBaseAPIs extends NoSqlClient {
+public class HBaseAPIs extends NoSqlAPI {
 
     private HBaseClient hbaseClient;
     public HBaseAPIs(ClusterConf conf) throws IOException {

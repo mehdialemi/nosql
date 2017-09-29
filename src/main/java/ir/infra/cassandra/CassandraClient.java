@@ -5,7 +5,6 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.extras.codecs.joda.InstantCodec;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
-import ir.infra.NoSqlClient;
 import ir.infra.core.Constants;
 import ir.infra.tables.EmsInfo;
 

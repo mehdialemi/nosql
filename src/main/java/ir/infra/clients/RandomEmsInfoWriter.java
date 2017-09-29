@@ -88,7 +88,10 @@ public class RandomEmsInfoWriter {
             HttpResponse response = client.execute(httpPost);
 
             if (response.getStatusLine().getStatusCode() != 204) {
-                throw new Exception("Wrong status code: " + response.getStatusLine().getStatusCode());
+                System.out.println("Wrong status code: " + response.getStatusLine().getStatusCode());
+                i --;
+                Thread.sleep(5000);
+                continue;
             }
 
             long t2 = System.nanoTime();

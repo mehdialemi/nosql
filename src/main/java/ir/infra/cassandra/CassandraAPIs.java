@@ -1,7 +1,7 @@
 package ir.infra.cassandra;
 
 
-import ir.infra.NoSqlClient;
+import ir.infra.NoSqlAPI;
 import ir.infra.core.ClusterConf;
 import ir.infra.tables.EmsInfo;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 @Path("cassandra")
 @Produces(MediaType.APPLICATION_JSON)
-public class CassandraAPIs extends NoSqlClient {
+public class CassandraAPIs extends NoSqlAPI {
 
     private CassandraClient cassandraClient;
 

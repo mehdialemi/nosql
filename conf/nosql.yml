@@ -1,0 +1,27 @@
+clusterConf:
+  zkAddress: localhost:2181
+  coordinator: localhost
+  enable_hbase: false
+  enable_cassandra: true
+  reportPeriod: 10
+
+logging:
+  level: INFO
+  appenders:
+    - type: file
+      currentLogFilename: /var/log/nosql/output.log
+      threshold: ALL
+      queueSize: 512
+      discardingThreshold: 0
+      archive: true
+      archivedLogFilenamePattern: /var/log/nosql/output-%d.log
+      archivedFileCount: 5
+      timeZone: UTC
+      logFormat: # TODO
+      bufferSize: 8KB
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+      bindHost: 0.0.0.0 # only bind to loopback

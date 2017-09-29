@@ -1,11 +1,12 @@
 package ir.infra;
 
 import com.codahale.metrics.ConsoleReporter;
-import com.codahale.metrics.Metric;
-import com.codahale.metrics.MetricFilter;
+import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.Timer;
 import ir.infra.core.ClusterConf;
 import ir.infra.tables.EmsInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -13,24 +14,23 @@ import java.util.concurrent.TimeUnit;
 /**
  * Defines the necessary methods for each objects which should be persisted into the nosql database.
  */
-public abstract class NoSqlClient {
+public abstract class NoSqlAPI {
 
     protected Timer addTimer;
     protected Timer getTimer;
 
 
-    private final ConsoleReporter reporter;
-
-    public NoSqlClient(ClusterConf conf) {
+    public NoSqlAPI(ClusterConf conf) {
         addTimer = conf.getMetricRegistry().timer("add_duration");
         getTimer = conf.getMetricRegistry().timer("get_duration");
 
-        reporter = ConsoleReporter.forRegistry(conf.getMetricRegistry())
+        Slf4jReporter.forRegistry(conf.getMetricRegistry())
                 .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .filter((s, metric) -> s.endsWith("duration"))
-                .build();
-        reporter.start(conf.getReportPeriod(), TimeUnit.SECONDS);
+                .outputTo(LoggerFactory.getLogger("metric"))
+                .build()
+                .start(conf.getReportPeriod(), TimeUnit.SECONDS);
     }
 
     protected abstract void add(EmsInfo emsInfo) throws IOException;
