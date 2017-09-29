@@ -31,4 +31,8 @@ public class RandomEmsInfoGenerator {
     public static String randomEmsInfoJson(long id) {
         return toJson(randomEmsInfo(id));
     }
+
+    public static String randomEmsInfoJson() {
+        return toJson(randomEmsInfo(random.nextLong()));
+    }
 }

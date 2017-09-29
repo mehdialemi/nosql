@@ -1,6 +1,11 @@
 package ir.infra.clients;
 
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -16,24 +21,23 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultRoutePlanner;
 import org.apache.http.impl.conn.DefaultSchemePortResolver;
 import org.apache.http.protocol.HttpContext;
+import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Writes EmsInfo objects into the database by calling the provided REST services.
  */
-public class EmsInfoWriter {
-
-//    final static String URL = "http://localhost:8080/cassandra/add/emsInfo";
-//    public static final String HOSTNAME = "localhost";
+public class RandomEmsInfoWriter {
 
     public static void main(String[] args) throws Exception {
         final String hostname = args[0];
         final String path = args[1];
         int num = Integer.parseInt(args[2]);
+        int reportPeriodSec = Integer.parseInt(args[3]);
 
+        Logger logger = (Logger) LoggerFactory.getLogger("org.apache.http");
+        logger.setLevel(Level.INFO);
 
         ConnectionKeepAliveStrategy keepAliveStrategy = new DefaultConnectionKeepAliveStrategy() {
 
@@ -45,6 +49,7 @@ public class EmsInfoWriter {
                 return keepAliveDuration;
             }
         };
+
 
         HttpRoutePlanner rp = new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE) {
 
@@ -63,40 +68,34 @@ public class EmsInfoWriter {
                 .setKeepAliveStrategy(keepAliveStrategy)
                 .build();
 
-        long sum = 0;
+        MetricRegistry registry = new MetricRegistry();
+        Timer timer = registry.timer("duration");
+
+        final ConsoleReporter reporter = ConsoleReporter.forRegistry(registry)
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
+        reporter.start(reportPeriodSec, TimeUnit.SECONDS);
+
         String url = "http://" + hostname + ":8080/" + path;
         for (int i = 0; i < num; i++) {
             HttpPost httpPost = new HttpPost(url);
             httpPost.addHeader("content-type", "application/json");
-            String json = RandomEmsInfoGenerator.randomEmsInfoJson(i);
+            String json = RandomEmsInfoGenerator.randomEmsInfoJson();
             StringEntity entity = new StringEntity(json);
             httpPost.setEntity(entity);
             long t1 = System.nanoTime();
             HttpResponse response = client.execute(httpPost);
 
-            if (response.getStatusLine().getStatusCode() != 204)
+            if (response.getStatusLine().getStatusCode() != 204) {
                 throw new Exception("Wrong status code: " + response.getStatusLine().getStatusCode());
+            }
 
             long t2 = System.nanoTime();
             long duration = (t2 - t1) / 1000000;
-            System.out.println("duration: " + duration);
-            sum += duration;
+            timer.update(duration, TimeUnit.MILLISECONDS);
         }
 
-        System.out.println("Average Insert Duration: " + sum / 1000 + "");
-
         client.close();
-//
-//        Client client = Client.create(clientConf);
-//
-//        WebResource webResource = client.resource(URL);
-//
-//        EmsInfo emsInfo = new EmsInfo();
-//        ClientResponse response = webResource.type(MediaType.APPLICATION_JSON)
-//                .post(ClientResponse.class, emsInfo);
-//
-//        if (response.getStatus() != 204) {
-//            System.out.println("Error");
-//        }
     }
 }
