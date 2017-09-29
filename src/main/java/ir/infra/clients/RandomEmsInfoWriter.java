@@ -10,11 +10,9 @@ import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.routing.HttpRoutePlanner;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClients;
@@ -33,8 +31,9 @@ public class RandomEmsInfoWriter {
     public static void main(String[] args) throws Exception {
         final String hostname = args[0];
         final String path = args[1];
-        int num = Integer.parseInt(args[2]);
+        int threads = Integer.parseInt(args[2]);
         int reportPeriodSec = Integer.parseInt(args[3]);
+        long testDuration = Integer.parseInt(args[4]);
 
         Logger logger = (Logger) LoggerFactory.getLogger("org.apache.http");
         logger.setLevel(Level.INFO);
@@ -78,27 +77,14 @@ public class RandomEmsInfoWriter {
         reporter.start(reportPeriodSec, TimeUnit.SECONDS);
 
         String url = "http://" + hostname + ":8080/" + path;
-        for (int i = 0; i < num; i++) {
-            HttpPost httpPost = new HttpPost(url);
-            httpPost.addHeader("content-type", "application/json");
-            String json = RandomEmsInfoGenerator.randomEmsInfoJson();
-            StringEntity entity = new StringEntity(json);
-            httpPost.setEntity(entity);
-            long t1 = System.nanoTime();
-            HttpResponse response = client.execute(httpPost);
 
-            if (response.getStatusLine().getStatusCode() != 204) {
-                System.out.println("Wrong status code: " + response.getStatusLine().getStatusCode());
-                i --;
-                Thread.sleep(5000);
-                continue;
-            }
+        ClientWriters clientWriters = new ClientWriters(client, timer, url, threads);
+        clientWriters.start();
 
-            long t2 = System.nanoTime();
-            long duration = t2 - t1;
-            timer.update(duration, TimeUnit.NANOSECONDS);
-        }
+        Thread.sleep(testDuration * 1000);
 
+        clientWriters.stop();
+;
         client.close();
     }
 }
