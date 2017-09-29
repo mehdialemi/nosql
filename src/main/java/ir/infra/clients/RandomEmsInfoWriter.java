@@ -14,7 +14,6 @@ import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.routing.HttpRoutePlanner;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -23,7 +22,6 @@ import org.apache.http.impl.conn.DefaultSchemePortResolver;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.LoggerFactory;
 
-import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class RandomEmsInfoWriter {
 
-    public static final int MB = 1024 * 1024;
+    public static final int KB = 1024;
 
     public static void main(String[] args) throws Exception {
         final String hostname = args[0];
@@ -39,6 +37,9 @@ public class RandomEmsInfoWriter {
         int threads = Integer.parseInt(args[2]);
         int reportPeriodSec = Integer.parseInt(args[3]);
         long testDuration = Integer.parseInt(args[4]);
+        int bufferSizeKB = 512 * KB;
+        if (args.length > 5)
+            bufferSizeKB = Integer.parseInt(args[5]);
 
         Logger logger = (Logger) LoggerFactory.getLogger("org.apache.http");
         logger.setLevel(Level.INFO);
@@ -57,7 +58,6 @@ public class RandomEmsInfoWriter {
 
         HttpRoutePlanner rp = new DefaultRoutePlanner(DefaultSchemePortResolver.INSTANCE) {
 
-            @Override
             public HttpRoute determineRoute(
                     final HttpHost host,
                     final HttpRequest request,
@@ -68,7 +68,7 @@ public class RandomEmsInfoWriter {
         };
 
         final SocketConfig socketConfig = SocketConfig.custom()
-                .setSndBufSize(30 * MB)
+                .setSndBufSize(bufferSizeKB * KB)
                 .setTcpNoDelay(true)
                 .setSoKeepAlive(true)
                 .build();
@@ -76,9 +76,7 @@ public class RandomEmsInfoWriter {
         HttpClientBuilder clientBuilder = HttpClients.custom()
                 .setRoutePlanner(rp)
                 .setKeepAliveStrategy(keepAliveStrategy)
-                .setDefaultSocketConfig(socketConfig)
-                .setConnectionManagerShared(true)
-                .setConnectionTimeToLive(10, TimeUnit.SECONDS);
+                .setDefaultSocketConfig(socketConfig);
 
         MetricRegistry registry = new MetricRegistry();
         Timer timer = registry.timer("duration");
