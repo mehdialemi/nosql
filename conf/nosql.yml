@@ -4,7 +4,7 @@ clusterConf:
   enable_hbase: false
   enable_cassandra: true
   reportPeriod: 10
-  enable_test: false
+  enable_test: true
 
 logging:
   level: INFO

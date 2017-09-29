@@ -31,10 +31,14 @@ public class CassandraClient {
 
         cluster.init();
 
-        if (conf.isEnable_test())
+        if (conf.isEnable_test()) {
+            System.out.println("Connecting to keyspace: " + Constants.TEST_KEY_SPACE);
             session = cluster.connect(Constants.TEST_KEY_SPACE);
-        else
+        }
+        else {
+            System.out.println("Connecting to keyspace: " + Constants.KEY_SPACE);
             session = cluster.connect(Constants.KEY_SPACE);
+        }
 
         MappingManager mappingManager = new MappingManager(session);
         emsInfoMapper = mappingManager.mapper(EmsInfo.class);
