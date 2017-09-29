@@ -16,6 +16,7 @@ import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.conn.routing.HttpRoutePlanner;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultRoutePlanner;
 import org.apache.http.impl.conn.DefaultSchemePortResolver;
@@ -67,18 +68,17 @@ public class RandomEmsInfoWriter {
         };
 
         final SocketConfig socketConfig = SocketConfig.custom()
-                .setSndBufSize(500 * MB)
+                .setSndBufSize(30 * MB)
                 .setTcpNoDelay(true)
                 .setSoKeepAlive(true)
                 .build();
 
-        CloseableHttpClient client = HttpClients.custom()
+        HttpClientBuilder clientBuilder = HttpClients.custom()
                 .setRoutePlanner(rp)
                 .setKeepAliveStrategy(keepAliveStrategy)
                 .setDefaultSocketConfig(socketConfig)
                 .setConnectionManagerShared(true)
-                .setConnectionTimeToLive(10, TimeUnit.SECONDS)
-                .build();
+                .setConnectionTimeToLive(10, TimeUnit.SECONDS);
 
         MetricRegistry registry = new MetricRegistry();
         Timer timer = registry.timer("duration");
@@ -91,13 +91,11 @@ public class RandomEmsInfoWriter {
 
         String url = "http://" + hostname + ":8080/" + path;
 
-        ClientWriters clientWriters = new ClientWriters(client, timer, url, threads);
+        ClientWriters clientWriters = new ClientWriters(clientBuilder, timer, url, threads);
         clientWriters.start();
 
         Thread.sleep(testDuration * 1000);
 
         clientWriters.stop();
-
-        client.close();
     }
 }

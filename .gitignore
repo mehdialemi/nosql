@@ -1,4 +1,5 @@
 target/*
-target*
 !target/nosql-0.1.jar
+
+
 

@@ -5,6 +5,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -20,21 +21,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class ClientWriters {
 
-    private CloseableHttpClient client;
     private final Timer timer;
     private final String url;
     private boolean stop = false;
     private ExecutorService executorService;
     private List<Writer> writers;
 
-    public ClientWriters(CloseableHttpClient client, Timer timer, String url, int threads) {
-        this.client = client;
+    public ClientWriters(HttpClientBuilder clientBuilder, Timer timer, String url, int threads) {
         this.timer = timer;
         this.url = url;
         executorService = Executors.newFixedThreadPool(threads);
         writers = new ArrayList<>();
         for (int i = 0; i < threads; i++) {
-            writers.add(new Writer());
+            writers.add(new Writer(clientBuilder));
         }
     }
 
@@ -51,9 +50,11 @@ public class ClientWriters {
     class Writer implements Callable<Boolean> {
 
         HttpPost httpPost = new HttpPost(url);
+        private final CloseableHttpClient client;
 
-        public Writer() {
+        public Writer(HttpClientBuilder clientBuilder) {
             httpPost.addHeader("content-type", "application/json");
+            client = clientBuilder.build();
         }
 
         @Override
@@ -85,6 +86,13 @@ public class ClientWriters {
                 long t2 = System.nanoTime();
                 long duration = t2 - t1;
                 timer.update(duration, TimeUnit.NANOSECONDS);
+            }
+
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
             }
             return true;
         }
