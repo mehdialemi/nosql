@@ -2,21 +2,20 @@ package ir.infra.tables;
 
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.joda.time.Instant;
 
-import java.util.NavigableMap;
-
-import static org.apache.hadoop.hbase.util.Bytes.toBytes;
-import static ir.infra.core.Constants.KEY_SPACE;
 import static ir.infra.core.Constants.FAMILY;
-
+import static org.apache.hadoop.hbase.util.Bytes.toBytes;
 
 @Table(name = "EmsInfo")
+@JsonSerialize(using = EmsInfoSerializer.class)
+@JsonDeserialize(using = EmsInfoDeserializer.class)
 public class EmsInfo {
 
     public static final byte[] FAMILY_BYTES = toBytes(FAMILY);
@@ -33,6 +32,7 @@ public class EmsInfo {
     public static final byte[] CAR_SPEEDS = toBytes("CarSpeed");
     public static final byte[] RFID_NUMBERS = toBytes("RFIDNumber");
     public static final byte[] PARKOMETER_IDS = toBytes("ParkometerId");
+    public static final byte[] CRIM_CODES = toBytes("CrimeCode");
     public static final byte[] YEARS = toBytes("Year");
     public static final byte[] MONTHS = toBytes("Month");
     public static final byte[] DATES = toBytes("Date");
@@ -188,6 +188,9 @@ public class EmsInfo {
 
         if (emsInfo.ParkometerId != null)
         put.addColumn(FAMILY_BYTES, PARKOMETER_IDS, toBytes(emsInfo.ParkometerId));
+
+        if (emsInfo.CrimeCode != null)
+            put.addColumn(FAMILY_BYTES, CRIM_CODES, toBytes(emsInfo.CrimeCode));
 
         if (emsInfo.Year != null)
         put.addColumn(FAMILY_BYTES, YEARS, toBytes(emsInfo.Year));

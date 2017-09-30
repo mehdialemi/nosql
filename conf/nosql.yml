@@ -25,4 +25,6 @@ server:
   applicationConnectors:
     - type: http
       port: 8080
-      bindHost: 0.0.0.0 # only bind to loopback
+      bindHost: 0.0.0.0
+      inputBufferSize: 100000KiB
+
