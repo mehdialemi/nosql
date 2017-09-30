@@ -21,54 +21,131 @@ public class EmsInfoDeserializer extends JsonDeserializer<EmsInfo> {
     public EmsInfo deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         EmsInfo emsInfo = new EmsInfo();
         TreeNode treeNode = jsonParser.getCodec().readTree(jsonParser);
-        emsInfo.EmsInfoId = (Long) ((LongNode) treeNode.get("EmsInfoId")).numberValue();
-        emsInfo.DeviceId = (Integer) ((IntNode) treeNode.get("DeviceId")).numberValue();
-        emsInfo.DeviceCompanySystemId = (Integer) ((IntNode) treeNode.get("DeviceCompanySystemId")).numberValue();
-        emsInfo.CompanyId = (Integer) ((IntNode) treeNode.get("CompanyId")).numberValue();
-        emsInfo.Line = (Integer) ((IntNode) treeNode.get("Line")).numberValue();
 
-        String passDatetime = treeNode.get("PassDatetime").asToken().asString();
-        emsInfo.PassDatetime = Instant.parse(passDatetime);
-
-        String receiveDateTime = treeNode.get("ReceiveDateTime").asToken().asString();
-        emsInfo.ReceiveDateTime = Instant.parse(receiveDateTime);
-
-        emsInfo.ImageScore = (Integer) ((IntNode) treeNode.get("ImageScore")).numberValue();
-        emsInfo.InvalidInfo = (Integer) ((IntNode) treeNode.get("InvalidInfo")).numberValue();
-
-        emsInfo.MasterPlateNumber = (Long) ((LongNode) treeNode.get("MasterPlateNumber")).numberValue();
+        TreeNode emsInfoId = treeNode.get("EmsInfoId");
+        if (emsInfoId != null)
+            emsInfo.EmsInfoId = (Long) ((LongNode) emsInfoId).numberValue();
 
 
-        emsInfo.SystemId = (Integer) ((IntNode) treeNode.get("SystemId")).numberValue();
-        emsInfo.CarSpeed = (Integer) ((IntNode) treeNode.get("CarSpeed")).numberValue();
+        TreeNode deviceId = treeNode.get("DeviceId");
+        if (deviceId != null)
+            emsInfo.DeviceId = (Integer) ((IntNode) deviceId).numberValue();
 
-        emsInfo.RFIDNumber = treeNode.get("RFIDNumber").asToken().asString();
 
-        emsInfo.ParkometerId = (Integer) ((IntNode) treeNode.get("ParkometerId")).numberValue();
-        emsInfo.CrimeCode = (Integer) ((IntNode) treeNode.get("CrimeCode")).numberValue();
-        emsInfo.Year = (Integer) ((IntNode) treeNode.get("Year")).numberValue();
-        emsInfo.Month = (Byte) ((IntNode) treeNode.get("Month")).numberValue();
+        TreeNode deviceCompanySystemId = treeNode.get("DeviceCompanySystemId");
+        if (deviceCompanySystemId != null)
+            emsInfo.DeviceCompanySystemId = (Integer) ((IntNode) deviceCompanySystemId).numberValue();
 
-        emsInfo.Date = (Long) ((LongNode) treeNode.get("Date")).numberValue();
-        emsInfo.Inout = (Short) ((ShortNode) treeNode.get("Inout")).numberValue();
 
-        emsInfo.ImagePath = treeNode.get("ImagePath").asToken().asString();
-        emsInfo.PlateImagePath = treeNode.get("PlateImagePath").asToken().asString();
-        emsInfo.ImageBWPath = treeNode.get("ImageBWPath").asToken().asString();
+        TreeNode companyId = treeNode.get("CompanyId");
+        if (companyId != null)
+            emsInfo.CompanyId = (Integer) ((IntNode) companyId).numberValue();
 
-        emsInfo.Allowed = ((BooleanNode) treeNode.get("Allowed")).asBoolean();
 
-        emsInfo.AllowReasonId = (Integer) ((IntNode) treeNode.get("AllowReasonId")).numberValue();
+        TreeNode line = treeNode.get("Line");
+        if (line != null)
+            emsInfo.Line = (Integer) ((IntNode) line).numberValue();
 
-        emsInfo.SymfaAllowed = ((BooleanNode) treeNode.get("SymfaAllowed")).asBoolean();
 
-        String symfaEndDate = treeNode.get("SymfaEndDate").asToken().asString();
-        emsInfo.SymfaEndDate = Instant.parse(symfaEndDate);
+        TreeNode passDatetime = treeNode.get("PassDatetime");
+        if (passDatetime != null)
+            emsInfo.PassDatetime = Instant.parse(passDatetime.asToken().asString());
 
-        emsInfo.WrongDirection = (Integer) ((IntNode) treeNode.get("WrongDirection")).numberValue();
 
-        emsInfo.IsSendToNaja = ((BooleanNode) treeNode.get("IsSendToNaja")).asBoolean();
-        emsInfo.ValidForSms = ((BooleanNode) treeNode.get("ValidForSms")).asBoolean();
+        TreeNode receiveDateTime = treeNode.get("ReceiveDateTime");
+        if (receiveDateTime != null)
+            emsInfo.ReceiveDateTime = Instant.parse(receiveDateTime.asToken().asString());
+
+
+        TreeNode imageScore = treeNode.get("ImageScore");
+        if (imageScore != null)
+            emsInfo.ImageScore = (Integer) ((IntNode) imageScore).numberValue();
+
+
+        TreeNode invalidInfo = treeNode.get("InvalidInfo");
+        if (invalidInfo != null)
+            emsInfo.InvalidInfo = (Integer) ((IntNode) invalidInfo).numberValue();
+
+        TreeNode masterPlateNumber = treeNode.get("MasterPlateNumber");
+        if (masterPlateNumber != null)
+            emsInfo.MasterPlateNumber = (Long) ((LongNode) masterPlateNumber).numberValue();
+
+        TreeNode systemId = treeNode.get("SystemId");
+        if (systemId != null)
+            emsInfo.SystemId = (Integer) ((IntNode) systemId).numberValue();
+
+        TreeNode carSpeed = treeNode.get("CarSpeed");
+        if(carSpeed != null)
+            emsInfo.CarSpeed = (Integer) ((IntNode) carSpeed).numberValue();
+
+        TreeNode rfidNumber = treeNode.get("RFIDNumber");
+        if (rfidNumber != null)
+            emsInfo.RFIDNumber = rfidNumber.asToken().asString();
+
+        TreeNode parkometerId = treeNode.get("ParkometerId");
+        if (parkometerId != null)
+            emsInfo.ParkometerId = (Integer) ((IntNode) parkometerId).numberValue();
+
+        TreeNode crimeCode = treeNode.get("CrimeCode");
+        if (crimeCode != null)
+            emsInfo.CrimeCode = (Integer) ((IntNode) crimeCode).numberValue();
+
+        TreeNode year = treeNode.get("Year");
+        if (year != null)
+            emsInfo.Year = (Integer) ((IntNode) year).numberValue();
+
+        TreeNode month = treeNode.get("Month");
+        if (month != null)
+            emsInfo.Month = (Byte) ((IntNode) month).numberValue();
+
+        TreeNode date = treeNode.get("Date");
+        if (date != null)
+            emsInfo.Date = (Long) ((LongNode) date).numberValue();
+
+
+        TreeNode inout = treeNode.get("Inout");
+        if (inout != null)
+            emsInfo.Inout = (Short) ((ShortNode) inout).numberValue();
+
+        TreeNode imagePath = treeNode.get("ImagePath");
+        if (imagePath != null)
+            emsInfo.ImagePath = imagePath.asToken().asString();
+
+        TreeNode plateImagePath = treeNode.get("PlateImagePath");
+        if (plateImagePath != null)
+            emsInfo.PlateImagePath = plateImagePath.asToken().asString();
+
+        TreeNode imageBWPath = treeNode.get("ImageBWPath");
+        if (imageBWPath != null)
+            emsInfo.ImageBWPath = imageBWPath.asToken().asString();
+
+        TreeNode allowed = treeNode.get("Allowed");
+        if (allowed != null)
+            emsInfo.Allowed = ((BooleanNode) allowed).asBoolean();
+
+        TreeNode allowReasonId = treeNode.get("AllowReasonId");
+        if (allowReasonId != null)
+            emsInfo.AllowReasonId = (Integer) ((IntNode) allowReasonId).numberValue();
+
+        TreeNode symfaAllowed = treeNode.get("SymfaAllowed");
+        if (symfaAllowed != null)
+            emsInfo.SymfaAllowed = ((BooleanNode) symfaAllowed).asBoolean();
+
+        TreeNode symfaEndDate = treeNode.get("SymfaEndDate");
+        if (symfaEndDate != null)
+            emsInfo.SymfaEndDate = Instant.parse(symfaEndDate.asToken().asString());
+
+        TreeNode wrongDirection = treeNode.get("WrongDirection");
+        if (wrongDirection != null)
+            emsInfo.WrongDirection = (Integer) ((IntNode) wrongDirection).numberValue();
+
+        TreeNode isSendToNaja = treeNode.get("IsSendToNaja");
+        if (isSendToNaja != null)
+            emsInfo.IsSendToNaja = ((BooleanNode) isSendToNaja).asBoolean();
+
+        TreeNode validForSms = treeNode.get("ValidForSms");
+        if (validForSms != null)
+            emsInfo.ValidForSms = ((BooleanNode) validForSms).asBoolean();
 
         return emsInfo;
     }
