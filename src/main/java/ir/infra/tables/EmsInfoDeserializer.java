@@ -1,13 +1,11 @@
 package ir.infra.tables;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import com.fasterxml.jackson.databind.node.IntNode;
-import com.fasterxml.jackson.databind.node.LongNode;
-import com.fasterxml.jackson.databind.node.ShortNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.*;
 import org.joda.time.Instant;
 
 import java.io.IOException;
@@ -20,132 +18,133 @@ public class EmsInfoDeserializer extends JsonDeserializer<EmsInfo> {
     @Override
     public EmsInfo deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         EmsInfo emsInfo = new EmsInfo();
-        TreeNode treeNode = jsonParser.getCodec().readTree(jsonParser);
+        ObjectMapper mapper = (ObjectMapper) jsonParser.getCodec();
+        ObjectNode root = mapper.readTree(jsonParser);
 
-        TreeNode emsInfoId = treeNode.get("EmsInfoId");
+        JsonNode emsInfoId = root.findValue("EmsInfoId");
         if (emsInfoId != null)
-            emsInfo.EmsInfoId = (Long) ((LongNode) emsInfoId).numberValue();
+            emsInfo.EmsInfoId = emsInfoId.asLong();
 
 
-        TreeNode deviceId = treeNode.get("DeviceId");
+        JsonNode deviceId = root.get("DeviceId");
         if (deviceId != null)
-            emsInfo.DeviceId = (Integer) ((IntNode) deviceId).numberValue();
+            emsInfo.DeviceId = deviceId.asInt();
 
 
-        TreeNode deviceCompanySystemId = treeNode.get("DeviceCompanySystemId");
+        JsonNode deviceCompanySystemId = root.get("DeviceCompanySystemId");
         if (deviceCompanySystemId != null)
-            emsInfo.DeviceCompanySystemId = (Integer) ((IntNode) deviceCompanySystemId).numberValue();
+            emsInfo.DeviceCompanySystemId = deviceCompanySystemId.asInt();
 
 
-        TreeNode companyId = treeNode.get("CompanyId");
+        JsonNode companyId = root.get("CompanyId");
         if (companyId != null)
-            emsInfo.CompanyId = (Integer) ((IntNode) companyId).numberValue();
+            emsInfo.CompanyId = companyId.asInt();
 
 
-        TreeNode line = treeNode.get("Line");
+        JsonNode line = root.get("Line");
         if (line != null)
-            emsInfo.Line = (Integer) ((IntNode) line).numberValue();
+            emsInfo.Line = line.asInt();
 
 
-        TreeNode passDatetime = treeNode.get("PassDatetime");
+        JsonNode passDatetime = root.get("PassDatetime");
         if (passDatetime != null)
-            emsInfo.PassDatetime = Instant.parse(passDatetime.asToken().asString());
+            emsInfo.PassDatetime = Instant.parse(passDatetime.asText());
 
 
-        TreeNode receiveDateTime = treeNode.get("ReceiveDateTime");
+        JsonNode receiveDateTime = root.get("ReceiveDateTime");
         if (receiveDateTime != null)
-            emsInfo.ReceiveDateTime = Instant.parse(receiveDateTime.asToken().asString());
+            emsInfo.ReceiveDateTime = Instant.parse(receiveDateTime.asText());
 
 
-        TreeNode imageScore = treeNode.get("ImageScore");
+        JsonNode imageScore = root.get("ImageScore");
         if (imageScore != null)
-            emsInfo.ImageScore = (Integer) ((IntNode) imageScore).numberValue();
+            emsInfo.ImageScore = imageScore.asInt();
 
 
-        TreeNode invalidInfo = treeNode.get("InvalidInfo");
+        JsonNode invalidInfo = root.get("InvalidInfo");
         if (invalidInfo != null)
-            emsInfo.InvalidInfo = (Integer) ((IntNode) invalidInfo).numberValue();
+            emsInfo.InvalidInfo = invalidInfo.asInt();
 
-        TreeNode masterPlateNumber = treeNode.get("MasterPlateNumber");
+        JsonNode masterPlateNumber = root.get("MasterPlateNumber");
         if (masterPlateNumber != null)
-            emsInfo.MasterPlateNumber = (Long) ((LongNode) masterPlateNumber).numberValue();
+            emsInfo.MasterPlateNumber = masterPlateNumber.asLong();
 
-        TreeNode systemId = treeNode.get("SystemId");
+        JsonNode systemId = root.get("SystemId");
         if (systemId != null)
-            emsInfo.SystemId = (Integer) ((IntNode) systemId).numberValue();
+            emsInfo.SystemId = systemId.asInt();
 
-        TreeNode carSpeed = treeNode.get("CarSpeed");
+        JsonNode carSpeed = root.get("CarSpeed");
         if(carSpeed != null)
-            emsInfo.CarSpeed = (Integer) ((IntNode) carSpeed).numberValue();
+            emsInfo.CarSpeed = carSpeed.asInt();
 
-        TreeNode rfidNumber = treeNode.get("RFIDNumber");
+        JsonNode rfidNumber = root.get("RFIDNumber");
         if (rfidNumber != null)
-            emsInfo.RFIDNumber = rfidNumber.asToken().asString();
+            emsInfo.RFIDNumber = rfidNumber.asText();
 
-        TreeNode parkometerId = treeNode.get("ParkometerId");
+        JsonNode parkometerId = root.get("ParkometerId");
         if (parkometerId != null)
-            emsInfo.ParkometerId = (Integer) ((IntNode) parkometerId).numberValue();
+            emsInfo.ParkometerId = parkometerId.asInt();
 
-        TreeNode crimeCode = treeNode.get("CrimeCode");
+        JsonNode crimeCode = root.get("CrimeCode");
         if (crimeCode != null)
-            emsInfo.CrimeCode = (Integer) ((IntNode) crimeCode).numberValue();
+            emsInfo.CrimeCode = crimeCode.asInt();
 
-        TreeNode year = treeNode.get("Year");
+        JsonNode year = root.get("Year");
         if (year != null)
-            emsInfo.Year = (Integer) ((IntNode) year).numberValue();
+            emsInfo.Year = year.asInt();
 
-        TreeNode month = treeNode.get("Month");
+        JsonNode month = root.get("Month");
         if (month != null)
-            emsInfo.Month = (Byte) ((IntNode) month).numberValue();
+            emsInfo.Month = (byte) month.asInt();
 
-        TreeNode date = treeNode.get("Date");
+        JsonNode date = root.get("Date");
         if (date != null)
-            emsInfo.Date = (Long) ((LongNode) date).numberValue();
+            emsInfo.Date = date.asLong();
 
 
-        TreeNode inout = treeNode.get("Inout");
+        JsonNode inout = root.get("Inout");
         if (inout != null)
-            emsInfo.Inout = (Short) ((ShortNode) inout).numberValue();
+            emsInfo.Inout = (short) inout.asInt();
 
-        TreeNode imagePath = treeNode.get("ImagePath");
+        JsonNode imagePath = root.get("ImagePath");
         if (imagePath != null)
-            emsInfo.ImagePath = imagePath.asToken().asString();
+            emsInfo.ImagePath = imagePath.asText();
 
-        TreeNode plateImagePath = treeNode.get("PlateImagePath");
+        JsonNode plateImagePath = root.get("PlateImagePath");
         if (plateImagePath != null)
-            emsInfo.PlateImagePath = plateImagePath.asToken().asString();
+            emsInfo.PlateImagePath = plateImagePath.asText();
 
-        TreeNode imageBWPath = treeNode.get("ImageBWPath");
+        JsonNode imageBWPath = root.get("ImageBWPath");
         if (imageBWPath != null)
-            emsInfo.ImageBWPath = imageBWPath.asToken().asString();
+            emsInfo.ImageBWPath = imageBWPath.asText();
 
-        TreeNode allowed = treeNode.get("Allowed");
+        JsonNode allowed = root.get("Allowed");
         if (allowed != null)
-            emsInfo.Allowed = ((BooleanNode) allowed).asBoolean();
+            emsInfo.Allowed = allowed.asBoolean();
 
-        TreeNode allowReasonId = treeNode.get("AllowReasonId");
+        JsonNode allowReasonId = root.get("AllowReasonId");
         if (allowReasonId != null)
-            emsInfo.AllowReasonId = (Integer) ((IntNode) allowReasonId).numberValue();
+            emsInfo.AllowReasonId = allowReasonId.asInt();
 
-        TreeNode symfaAllowed = treeNode.get("SymfaAllowed");
+        JsonNode symfaAllowed = root.get("SymfaAllowed");
         if (symfaAllowed != null)
-            emsInfo.SymfaAllowed = ((BooleanNode) symfaAllowed).asBoolean();
+            emsInfo.SymfaAllowed = symfaAllowed.asBoolean();
 
-        TreeNode symfaEndDate = treeNode.get("SymfaEndDate");
+        JsonNode symfaEndDate = root.get("SymfaEndDate");
         if (symfaEndDate != null)
-            emsInfo.SymfaEndDate = Instant.parse(symfaEndDate.asToken().asString());
+            emsInfo.SymfaEndDate = Instant.parse(symfaEndDate.asText());
 
-        TreeNode wrongDirection = treeNode.get("WrongDirection");
+        JsonNode wrongDirection = root.get("WrongDirection");
         if (wrongDirection != null)
-            emsInfo.WrongDirection = (Integer) ((IntNode) wrongDirection).numberValue();
+            emsInfo.WrongDirection = wrongDirection.asInt();
 
-        TreeNode isSendToNaja = treeNode.get("IsSendToNaja");
+        JsonNode isSendToNaja = root.get("IsSendToNaja");
         if (isSendToNaja != null)
-            emsInfo.IsSendToNaja = ((BooleanNode) isSendToNaja).asBoolean();
+            emsInfo.IsSendToNaja = isSendToNaja.asBoolean();
 
-        TreeNode validForSms = treeNode.get("ValidForSms");
+        JsonNode validForSms = root.get("ValidForSms");
         if (validForSms != null)
-            emsInfo.ValidForSms = ((BooleanNode) validForSms).asBoolean();
+            emsInfo.ValidForSms = validForSms.asBoolean();
 
         return emsInfo;
     }

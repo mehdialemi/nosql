@@ -1,6 +1,7 @@
 package ir.infra.clients;
 
 import com.codahale.metrics.Timer;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -58,7 +59,7 @@ public class ClientWriters {
         }
 
         @Override
-        public Boolean call() {
+        public Boolean call() throws JsonProcessingException {
             while (!stop) {
                 String json = RandomEmsInfoGenerator.randomEmsInfoJson();
                 StringEntity entity = null;
