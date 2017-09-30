@@ -19,12 +19,18 @@ public class RandomEmsInfoGenerator {
     static byte[] bytes = new byte[200 * 1024];
 
     public static void main(String[] args) throws JsonProcessingException {
-        System.out.println(randomEmsInfoJson());
+        long t1 = System.nanoTime();
+        for(int i = 0 ; i < 1000; i ++) {
+            randomEmsInfoJson();
+        }
+
+        System.out.println("duration: " + (System.nanoTime() - t1) / 1000000);
     }
 
-    public static EmsInfo randomEmsInfo(long id) {
-        EmsInfo emsInfo = new EmsInfo();
-        emsInfo.EmsInfoId = id;
+    static EmsInfo emsInfo = new EmsInfo();
+    static String emsInfoJson;
+
+    static {
         emsInfo.DeviceId = random.nextInt();
         emsInfo.DeviceCompanySystemId = random.nextInt();
         emsInfo.CompanyId = random.nextInt();
@@ -56,15 +62,21 @@ public class RandomEmsInfoGenerator {
         emsInfo.IsSendToNaja = random.nextBoolean();
         emsInfo.ValidForSms = random.nextBoolean();
 
-        return emsInfo;
+        try {
+            emsInfoJson = toJson(emsInfo);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static String toJson(EmsInfo emsInfo) throws JsonProcessingException {
+    private static String toJson(EmsInfo emsInfo) throws JsonProcessingException {
         ObjectMapper mapper = Jackson.newObjectMapper();
         return mapper.writeValueAsString(emsInfo);
     }
 
-    public static String randomEmsInfoJson() throws JsonProcessingException {
-        return toJson(randomEmsInfo(random.nextLong()));
+    public static synchronized String randomEmsInfoJson() throws JsonProcessingException {
+        StringBuilder sb = new StringBuilder(emsInfoJson);
+        sb.insert(13, random.nextInt());
+        return sb.toString();
     }
 }
