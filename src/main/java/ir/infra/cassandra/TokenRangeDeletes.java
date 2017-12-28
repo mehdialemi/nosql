@@ -24,7 +24,7 @@ public class TokenRangeDeletes implements Callable<Integer> {
     private static DecimalFormat df2 = new DecimalFormat(".####");
     private final Session session;
     private String hostname;
-    private final Set<TokenRange> tokenRanges;
+    private final List<TokenRange> tokenRanges;
     private final long ts;
 
     /**
@@ -35,7 +35,7 @@ public class TokenRangeDeletes implements Callable<Integer> {
      * @param tokenRanges ranges of tokens for host
      * @param ts          timestamp in micro second to delete old rows with field allowed = true
      */
-    public TokenRangeDeletes(final Session session, String hostname, final Set<TokenRange> tokenRanges, final long ts) {
+    public TokenRangeDeletes(final Session session, String hostname, final List<TokenRange> tokenRanges, final long ts) {
         this.session = session;
         this.hostname = hostname;
         this.tokenRanges = tokenRanges;
@@ -85,9 +85,8 @@ public class TokenRangeDeletes implements Callable<Integer> {
             }
 
             for (Select select : selects) {
-                Statement statement = select.setFetchSize(100);
-                System.out.println("Executing query: " + statement);
-                ResultSet rows = session.execute(statement);
+                System.out.println("Executing query: " + select);
+                ResultSet rows = session.execute(select);
 
                 System.out.println("Executing delete for current token range: " + tokenRange);
                 for (Row row : rows) {
