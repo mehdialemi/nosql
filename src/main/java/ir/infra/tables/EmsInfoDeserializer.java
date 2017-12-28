@@ -111,9 +111,9 @@ public class EmsInfoDeserializer extends JsonDeserializer<EmsInfo> {
         if (imagePath != null)
             emsInfo.ColorImage = ByteBuffer.wrap(imagePath.asToken().asByteArray());
 
-        JsonNode plateImagePath = root.get("PlageImage");
+        JsonNode plateImagePath = root.get("PlateImage");
         if (plateImagePath != null)
-            emsInfo.PlageImage = ByteBuffer.wrap(plateImagePath.asToken().asByteArray());
+            emsInfo.PlateImage = ByteBuffer.wrap(plateImagePath.asToken().asByteArray());
 
         JsonNode imageBWPath = root.get("BWImage");
         if (imageBWPath != null)
