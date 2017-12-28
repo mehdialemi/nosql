@@ -33,8 +33,8 @@ public class EmsInfoSerializer extends JsonSerializer<EmsInfo> {
         jsonGenerator.writeObjectField("Month", emsInfo.Month);
         jsonGenerator.writeNumberField("Date", emsInfo.Date);
         jsonGenerator.writeObjectField("Inout", emsInfo.Inout);
-        jsonGenerator.writeBinaryField("Image", emsInfo.Image.array());
-        jsonGenerator.writeStringField("PlateImagePath", emsInfo.PlateImagePath);
+        jsonGenerator.writeBinaryField("ColorImage", emsInfo.ColorImage.array());
+        jsonGenerator.writeBinaryField("PlageImage", emsInfo.PlageImage.array());
         jsonGenerator.writeBooleanField("Allowed", emsInfo.Allowed);
         jsonGenerator.writeNumberField("AllowReasonId", emsInfo.AllowReasonId);
         jsonGenerator.writeBooleanField("SymfaAllowed", emsInfo.SymfaAllowed);

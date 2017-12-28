@@ -39,9 +39,9 @@ public class EmsInfo {
     public static final byte[] MONTHS = toBytes("Month");
     public static final byte[] DATES = toBytes("Date");
     public static final byte[] INOUTS = toBytes("Inout");
-    public static final byte[] IMAGE = toBytes("Image");
-    public static final byte[] PLATE_IMAGE_PATHS = toBytes("PlateImagePath");
-    public static final byte[] IMAGE_BW_PATHS = toBytes("ImageBWPath");
+    public static final byte[] IMAGE = toBytes("ColorImage");
+    public static final byte[] PLATE_IMAGE_PATHS = toBytes("PlageImage");
+    public static final byte[] IMAGE_BW_PATHS = toBytes("BWImage");
     public static final byte[] ALLOWEDS = toBytes("Allowed");
     public static final byte[] ALLOW_REASON_IDS = toBytes("AllowReasonId");
     public static final byte[] SYMFA_ALLOWEDS = toBytes("SymfaAllowed");
@@ -109,13 +109,13 @@ public class EmsInfo {
     public Short Inout;
 
     @JsonProperty
-    public ByteBuffer Image;
+    public ByteBuffer ColorImage;
 
     @JsonProperty
-    public String PlateImagePath;
+    public ByteBuffer PlageImage;
 
     @JsonProperty
-    public String ImageBWPath;
+    public ByteBuffer BWImage;
 
     @JsonProperty
     public Boolean Allowed;
@@ -206,14 +206,14 @@ public class EmsInfo {
         if (emsInfo.Inout != null)
         put.addColumn(FAMILY_BYTES, INOUTS, toBytes(emsInfo.Inout));
 
-        if (emsInfo.Image != null)
-        put.addColumn(FAMILY_BYTES, IMAGE, emsInfo.Image.array());
+        if (emsInfo.ColorImage != null)
+        put.addColumn(FAMILY_BYTES, IMAGE, emsInfo.ColorImage.array());
 
-        if (emsInfo.PlateImagePath != null)
-        put.addColumn(FAMILY_BYTES, PLATE_IMAGE_PATHS, toBytes(emsInfo.PlateImagePath));
+        if (emsInfo.PlageImage != null)
+        put.addColumn(FAMILY_BYTES, PLATE_IMAGE_PATHS, toBytes(emsInfo.PlageImage));
 
-        if (emsInfo.ImageBWPath != null)
-        put.addColumn(FAMILY_BYTES, IMAGE_BW_PATHS, toBytes(emsInfo.ImageBWPath));
+        if (emsInfo.BWImage != null)
+        put.addColumn(FAMILY_BYTES, IMAGE_BW_PATHS, toBytes(emsInfo.BWImage));
 
         if (emsInfo.Allowed != null)
         put.addColumn(FAMILY_BYTES, ALLOWEDS, toBytes(emsInfo.Allowed));
@@ -329,16 +329,16 @@ public class EmsInfo {
             emsInfo.Inout = Bytes.toShort(inout);
 
 
-        emsInfo.Image = ByteBuffer.wrap(result.getValue(FAMILY_BYTES, IMAGE));
+        emsInfo.ColorImage = ByteBuffer.wrap(result.getValue(FAMILY_BYTES, IMAGE));
 
         byte[] platePath = result.getValue(FAMILY_BYTES, PLATE_IMAGE_PATHS);
         if (platePath != null)
-            emsInfo.PlateImagePath = Bytes.toString(platePath);
+            emsInfo.PlageImage = ByteBuffer.wrap(platePath);
 
 
         byte[] imageBWPath = result.getValue(FAMILY_BYTES, IMAGE_BW_PATHS);
         if (imageBWPath != null)
-            emsInfo.ImageBWPath = Bytes.toString(imageBWPath);
+            emsInfo.BWImage = ByteBuffer.wrap(imageBWPath);
 
 
         byte[] allowed = result.getValue(FAMILY_BYTES, ALLOWEDS);

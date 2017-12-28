@@ -52,9 +52,11 @@ public class RandomEmsInfoGenerator {
         emsInfo.Inout = (short) random.nextInt(4000);
 
         random.nextBytes(bytes);
-        emsInfo.Image = ByteBuffer.wrap(bytes);
+        emsInfo.ColorImage = ByteBuffer.wrap(bytes);
 
-        emsInfo.PlateImagePath = "plate33222";
+        byte[] bytes1 = new byte[10];
+        random.nextBytes(bytes1);
+        emsInfo.PlageImage = ByteBuffer.wrap(bytes1);
         emsInfo.Allowed = random.nextBoolean();
         emsInfo.AllowReasonId = random.nextInt();
         emsInfo.SymfaAllowed = random.nextBoolean();
