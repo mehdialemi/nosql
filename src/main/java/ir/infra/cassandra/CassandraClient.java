@@ -1,9 +1,6 @@
 package ir.infra.cassandra;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Host;
-import com.datastax.driver.core.Metadata;
-import com.datastax.driver.core.Session;
+import com.datastax.driver.core.*;
 import com.datastax.driver.core.policies.ConstantReconnectionPolicy;
 import com.datastax.driver.extras.codecs.joda.InstantCodec;
 import com.datastax.driver.mapping.Mapper;
@@ -87,8 +84,11 @@ public class CassandraClient {
         for (Host host : allHosts) {
             if (!hostAddress.equals(host.getAddress().getHostAddress()))
                 continue;
+
+            Set<TokenRange> tokenRanges = metadata.getTokenRanges(Constants.KEY_SPACE, host);
+            System.out.println("Current host tokens: " + tokenRanges.size());
             Future<Integer> future = executorService.submit(
-                    new TokenRangeDeletes(session, hostAddress, metadata.getTokenRanges(Constants.KEY_SPACE, host), tsMiS));
+                    new TokenRangeDeletes(session, hostAddress, tokenRanges, tsMiS));
             futures.add(future);
         }
 

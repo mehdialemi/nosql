@@ -85,11 +85,13 @@ public class TokenRangeDeletes implements Callable<Integer> {
             }
 
             for (Select select : selects) {
+                System.out.println("Executing query: " + select);
                 ResultSet rows = session.execute(select);
 
+                System.out.println("Executing delete for current token range: " + tokenRange);
                 for (Row row : rows) {
                     BoundStatement boundStatement = prepare.bind(ts, row.get(ID, Long.class));
-                    session.execute(boundStatement);
+                    session.executeAsync(boundStatement);
                 }
 
             }
