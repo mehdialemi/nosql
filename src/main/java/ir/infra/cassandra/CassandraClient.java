@@ -12,6 +12,7 @@ import ir.infra.core.ClusterConf;
 import ir.infra.core.Constants;
 import ir.infra.tables.EmsInfo;
 
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,17 +74,21 @@ public class CassandraClient {
         return emsInfoMapper.get(id);
     }
 
-    public void deleteOldAllowed() throws ExecutionException, InterruptedException {
+    public void deleteOldAllowed() throws ExecutionException, InterruptedException, UnknownHostException {
 
         long tsMiS = (System.currentTimeMillis() - conf.getOld_allowed_sec() * 1000) * 1000;
 
         Metadata metadata = cluster.getMetadata();
         Set<Host> allHosts = cluster.getMetadata().getAllHosts();
 
+        String hostAddress = InetAddress.getLocalHost().getHostAddress();
+        System.out.println("Current host address: " + hostAddress);
         List<Future<Integer>> futures = new ArrayList<>();
         for (Host host : allHosts) {
+            if (!hostAddress.equals(host.getAddress().getHostAddress()))
+                continue;
             Future<Integer> future = executorService.submit(
-                    new TokenRangeDeletes(session, host.getAddress().getHostName(), metadata.getTokenRanges(Constants.KEY_SPACE, host), tsMiS));
+                    new TokenRangeDeletes(session, hostAddress, metadata.getTokenRanges(Constants.KEY_SPACE, host), tsMiS));
             futures.add(future);
         }
 
