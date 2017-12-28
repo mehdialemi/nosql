@@ -4,12 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/pom.xml" line="80" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9cba4959-49a1-40e5-abcc-0a6f507fc8c2" name="Default" comment="commit">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ir/infra/clients/RandomEmsInfoGenerator.java" afterPath="$PROJECT_DIR$/src/main/java/ir/infra/clients/RandomEmsInfoGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfo.java" afterPath="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfo.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfoDeserializer.java" afterPath="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfoDeserializer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfoSerializer.java" afterPath="$PROJECT_DIR$/src/main/java/ir/infra/tables/EmsInfoSerializer.java" />
-    </list>
+    <list default="true" id="9cba4959-49a1-40e5-abcc-0a6f507fc8c2" name="Default" comment="commit" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />

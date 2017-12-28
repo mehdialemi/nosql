@@ -85,8 +85,9 @@ public class TokenRangeDeletes implements Callable<Integer> {
             }
 
             for (Select select : selects) {
-                System.out.println("Executing query: " + select);
-                ResultSet rows = session.execute(select);
+                Statement statement = select.setFetchSize(100);
+                System.out.println("Executing query: " + statement);
+                ResultSet rows = session.execute(statement);
 
                 System.out.println("Executing delete for current token range: " + tokenRange);
                 for (Row row : rows) {
