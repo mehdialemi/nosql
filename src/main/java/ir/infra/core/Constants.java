@@ -7,6 +7,7 @@ public class Constants {
 
     public final static String KEY_SPACE = "traffic";
     public final static String TEST_KEY_SPACE = "traffic_test";
+    public final static String TABLE = "emsinfo";
 
     /**
      * HBase default column family for each table. 'm' stands for 'main'

@@ -14,6 +14,6 @@ public class HBaseHealthCheck extends HealthCheck {
     protected Result check() throws Exception {
         if (client.isConnected())
             return Result.healthy();
-        return Result.unhealthy("Client connection is closed to hbase");
+        return Result.unhealthy("FillLocalCassandra connection is closed to hbase");
     }
 }

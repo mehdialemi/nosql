@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="spark-cassandra-connector-2.0.6-s_2.11">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/spark-cassandra-connector-2.0.6-s_2.11.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

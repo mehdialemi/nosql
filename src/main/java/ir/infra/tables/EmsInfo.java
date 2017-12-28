@@ -10,6 +10,8 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.joda.time.Instant;
 
+import java.nio.ByteBuffer;
+
 import static ir.infra.core.Constants.FAMILY;
 import static org.apache.hadoop.hbase.util.Bytes.toBytes;
 
@@ -37,7 +39,7 @@ public class EmsInfo {
     public static final byte[] MONTHS = toBytes("Month");
     public static final byte[] DATES = toBytes("Date");
     public static final byte[] INOUTS = toBytes("Inout");
-    public static final byte[] IMAGE_PATHS = toBytes("ImagePath");
+    public static final byte[] IMAGE = toBytes("Image");
     public static final byte[] PLATE_IMAGE_PATHS = toBytes("PlateImagePath");
     public static final byte[] IMAGE_BW_PATHS = toBytes("ImageBWPath");
     public static final byte[] ALLOWEDS = toBytes("Allowed");
@@ -107,7 +109,7 @@ public class EmsInfo {
     public Short Inout;
 
     @JsonProperty
-    public String ImagePath;
+    public ByteBuffer Image;
 
     @JsonProperty
     public String PlateImagePath;
@@ -204,8 +206,8 @@ public class EmsInfo {
         if (emsInfo.Inout != null)
         put.addColumn(FAMILY_BYTES, INOUTS, toBytes(emsInfo.Inout));
 
-        if (emsInfo.ImagePath != null)
-        put.addColumn(FAMILY_BYTES, IMAGE_PATHS, toBytes(emsInfo.ImagePath));
+        if (emsInfo.Image != null)
+        put.addColumn(FAMILY_BYTES, IMAGE, emsInfo.Image.array());
 
         if (emsInfo.PlateImagePath != null)
         put.addColumn(FAMILY_BYTES, PLATE_IMAGE_PATHS, toBytes(emsInfo.PlateImagePath));
@@ -327,10 +329,7 @@ public class EmsInfo {
             emsInfo.Inout = Bytes.toShort(inout);
 
 
-        byte[] imagePath = result.getValue(FAMILY_BYTES, IMAGE_PATHS);
-        if (imagePath != null)
-            emsInfo.ImagePath = Bytes.toString(imagePath);
-
+        emsInfo.Image = ByteBuffer.wrap(result.getValue(FAMILY_BYTES, IMAGE));
 
         byte[] platePath = result.getValue(FAMILY_BYTES, PLATE_IMAGE_PATHS);
         if (platePath != null)

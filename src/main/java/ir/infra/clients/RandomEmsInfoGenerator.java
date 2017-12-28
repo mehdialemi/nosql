@@ -7,6 +7,7 @@ import ir.infra.tables.EmsInfo;
 import org.joda.time.Instant;
 import sun.misc.BASE64Encoder;
 
+import java.nio.ByteBuffer;
 import java.util.Random;
 
 /**
@@ -51,7 +52,7 @@ public class RandomEmsInfoGenerator {
         emsInfo.Inout = (short) random.nextInt(4000);
 
         random.nextBytes(bytes);
-        emsInfo.ImagePath =  encoder.encode(bytes);
+        emsInfo.Image = ByteBuffer.wrap(bytes);
 
         emsInfo.PlateImagePath = "plate33222";
         emsInfo.Allowed = random.nextBoolean();
@@ -62,11 +63,11 @@ public class RandomEmsInfoGenerator {
         emsInfo.IsSendToNaja = random.nextBoolean();
         emsInfo.ValidForSms = random.nextBoolean();
 
-        try {
-            emsInfoJson = toJson(emsInfo);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            emsInfoJson = toJson(emsInfo);
+//        } catch (JsonProcessingException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private static String toJson(EmsInfo emsInfo) throws JsonProcessingException {
@@ -78,5 +79,11 @@ public class RandomEmsInfoGenerator {
         StringBuilder sb = new StringBuilder(emsInfoJson);
         sb.insert(13, random.nextInt());
         return sb.toString();
+    }
+
+    public static synchronized EmsInfo randomEmsInfo() throws JsonProcessingException {
+        emsInfo.EmsInfoId = random.nextLong();
+        emsInfo.Allowed = random.nextBoolean();
+        return emsInfo;
     }
 }

@@ -5,6 +5,8 @@ clusterConf:
   enable_cassandra: true
   reportPeriod: 10
   enable_test: true
+#  old_allowed_sec: 5535360
+  old_allowed_sec: 10
 
 logging:
   level: INFO

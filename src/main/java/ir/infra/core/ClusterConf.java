@@ -19,6 +19,8 @@ public class ClusterConf {
 
     private MetricRegistry metricRegistry;
 
+    private int old_allowed_sec;
+
     @JsonProperty
     public String getZkAddress() {
         return zkAddress;
@@ -82,5 +84,13 @@ public class ClusterConf {
 
     public void setEnable_test(boolean enable_test) {
         this.enable_test = enable_test;
+    }
+
+    public int getOld_allowed_sec() {
+        return old_allowed_sec;
+    }
+
+    public void setOld_allowed_sec(int old_allowed_sec) {
+        this.old_allowed_sec = old_allowed_sec;
     }
 }

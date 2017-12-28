@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.*;
 import org.joda.time.Instant;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  *
@@ -106,9 +107,9 @@ public class EmsInfoDeserializer extends JsonDeserializer<EmsInfo> {
         if (inout != null)
             emsInfo.Inout = (short) inout.asInt();
 
-        JsonNode imagePath = root.get("ImagePath");
+        JsonNode imagePath = root.get("Image");
         if (imagePath != null)
-            emsInfo.ImagePath = imagePath.asText();
+            emsInfo.Image = ByteBuffer.wrap(imagePath.asToken().asByteArray());
 
         JsonNode plateImagePath = root.get("PlateImagePath");
         if (plateImagePath != null)
