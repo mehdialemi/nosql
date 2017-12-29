@@ -5,7 +5,6 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import ir.infra.core.Constants;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -75,19 +74,33 @@ public class TokenRangeDeletes implements Callable<Integer> {
             selects.add(select);
         }
 
-        for (Select select : selects) {
-            System.out.println("Executing query: " + select);
-            ResultSet rows = session.execute(select);
 
-            System.out.println("Executing delete for current token range: " + tokenRange);
-            for (Row row : rows) {
-                BoundStatement boundStatement = prepare.bind(ts, row.get(ID, Long.class));
-                session.executeAsync(boundStatement);
-                sum++;
+        try {
+            for (Select select : selects) {
+                System.out.println("Executing query: " + select);
+                ResultSet rows = session.execute(select);
 
-                if (sum % 1000 == 0)
-                    System.out.println("Num allowed for token range " + tokenRange + ": " + sum);
+                while (true) {
+                    try {
+                        System.out.println("Executing delete for current token range: " + tokenRange);
+                        for (Row row : rows) {
+                            BoundStatement boundStatement = prepare.bind(ts, row.get(ID, Long.class));
+                            session.executeAsync(boundStatement);
+                            sum++;
+
+                            if (sum % 1000 == 0)
+                                System.out.println("Num allowed for token range " + tokenRange + ": " + sum);
+                        }
+                        break;
+                    } catch (Exception e) {
+                        System.out.println("Got exception for token range: " + tokenRange + "sleeping for 5 sec");
+                        e.printStackTrace();
+                        Thread.sleep(5000);
+                    }
+                }
             }
+        } catch (Exception e) {
+            System.out.println("Incomplete delete for token range: " + tokenRange);
         }
 
         return sum;
