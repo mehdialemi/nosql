@@ -55,7 +55,7 @@ public class CassandraClient {
         MappingManager mappingManager = new MappingManager(session);
         emsInfoMapper = mappingManager.mapper(EmsInfo.class);
 
-        executorService = Executors.newFixedThreadPool(cluster.getMetadata().getAllHosts().size());
+        executorService = Executors.newFixedThreadPool(cluster.getMetadata().getAllHosts().size() * conf.getThreadPerHost());
     }
 
     public boolean isConnected() {
