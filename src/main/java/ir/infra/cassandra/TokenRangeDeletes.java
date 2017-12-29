@@ -94,7 +94,6 @@ public class TokenRangeDeletes implements Callable<Integer> {
                         break;
                     } catch (Exception e) {
                         System.out.println("Got exception for token range: " + tokenRange + "sleeping for 5 sec");
-                        e.printStackTrace();
                         Thread.sleep(5000);
                     }
                 }
