@@ -79,7 +79,7 @@ public class CassandraClient {
 
 //        String hostAddress = InetAddress.getLocalHost().getHostAddress();
 //        System.out.println("Current host address: " + hostAddress);
-        List<Future<Integer>> futures = new ArrayList<>();
+        List<Future<TokenRangeDeletes>> futures = new ArrayList<>();
 
         Set<TokenRange> allTokenRanges = metadata.getTokenRanges();
 
@@ -119,23 +119,24 @@ public class CassandraClient {
 
         } while (!finish);
 
-        System.out.println("All tokens: " + tokenRangeQueue.size());
         while (tokenRangeQueue.size() != 0) {
-            TokenRange tokenRange = tokenRangeQueue.remove();
-            System.out.println("Deleting old rows token range: " + tokenRange);
-            Future<Integer> future = executorService.submit(
-                    new TokenRangeDeletes(session, tokenRange, tsMiS));
-            futures.add(future);
+            System.out.println("All tokens: " + tokenRangeQueue.size());
+
+            while (tokenRangeQueue.size() != 0) {
+                TokenRange tokenRange = tokenRangeQueue.remove();
+                System.out.println("Deleting old rows token range: " + tokenRange);
+                Future<TokenRangeDeletes> future = executorService.submit(
+                        new TokenRangeDeletes(session, tokenRange, tsMiS));
+                futures.add(future);
+            }
+
+            for (Future<TokenRangeDeletes> future : futures) {
+                TokenRangeDeletes result = future.get();
+                if (result.getLastId() != 0) {
+                    tokenRangeQueue.add(result.getTokenRange());
+                }
+            }
         }
-
-
-        int sum = 0;
-        for (Future<Integer> future : futures) {
-            sum += future.get();
-        }
-
-        System.out.println("All processed allowed = true: " + sum);
-
     }
 
     public void close() {
