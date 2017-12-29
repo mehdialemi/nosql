@@ -117,7 +117,7 @@ public class CassandraClient {
                 hostIndexTokenRange.put(host, lastIndex + 1);
             }
 
-        } while (finish);
+        } while (!finish);
 
         System.out.println("All tokens: " + tokenRangeQueue.size());
         while (tokenRangeQueue.size() != 0) {
