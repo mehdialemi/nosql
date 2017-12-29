@@ -83,41 +83,58 @@ public class CassandraClient {
 
         Set<TokenRange> allTokenRanges = metadata.getTokenRanges();
 
-        Map<String, List<TokenRange>> hostTokenRangeMap = new HashMap<>();
+        Map<Host, List<TokenRange>> hostTokenRangeMap = new HashMap<>();
         for(Host host: allHosts)
-            hostTokenRangeMap.put(host.getAddress().getHostAddress(), new ArrayList<>());
+            hostTokenRangeMap.put(host, new ArrayList<>());
 
         for (Host host : allHosts) {
-//            if (!hostAddress.equals(host.getAddress().getHostAddress()))
-//                continue;
             for (Token token : host.getTokens()) {
                 for (TokenRange tokenRange : allTokenRanges) {
                     if (tokenRange.getStart().compareTo(token) == 0) {
-                        hostTokenRangeMap.get(host.getAddress().getHostAddress()).add(tokenRange);
+                        hostTokenRangeMap.get(host).add(tokenRange);
                     }
                 }
             }
         }
 
+        Map<Host, Integer> hostIndexTokenRange = new HashMap<>();
         for (Host host : allHosts) {
+            hostIndexTokenRange.put(host, 0);
+        }
 
-            String hostAddress = host.getAddress().getHostAddress();
-            List<TokenRange> tokenRanges = hostTokenRangeMap.get(hostAddress);
-            System.out.println("Deleting old rows on host: " + hostAddress + ", num tokens: " + tokenRanges.size());
+        Queue<TokenRange> tokenRangeQueue = new LinkedList<>();
+        boolean finish;
+        do {
+            finish = true;
+            for (Host host : allHosts) {
+                Integer lastIndex = hostIndexTokenRange.get(host);
+                List<TokenRange> tokenRanges = hostTokenRangeMap.get(host);
+                if (lastIndex >= tokenRanges.size())
+                    continue;
+                finish = false;
+                TokenRange tokenRange = tokenRanges.get(lastIndex);
+                tokenRangeQueue.add(tokenRange);
+                hostIndexTokenRange.put(host, lastIndex + 1);
+            }
+
+        } while (finish);
+
+        System.out.println("All tokens: " + tokenRangeQueue.size());
+        while (tokenRangeQueue.size() != 0) {
+            TokenRange tokenRange = tokenRangeQueue.remove();
+            System.out.println("Deleting old rows token range: " + tokenRange);
             Future<Integer> future = executorService.submit(
-                    new TokenRangeDeletes(session, hostAddress, tokenRanges, tsMiS));
+                    new TokenRangeDeletes(session, tokenRange, tsMiS));
             futures.add(future);
         }
-//            Set<TokenRange> tokenRanges = metadata.getTokenRanges(Constants.KEY_SPACE, host);
 
-//            System.out.println("Current host tokens: " + tokenRanges.size());
 
         int sum = 0;
         for (Future<Integer> future : futures) {
             sum += future.get();
         }
 
-        System.out.println("All processed tokens: " + sum);
+        System.out.println("All processed allowed = true: " + sum);
 
     }
 
