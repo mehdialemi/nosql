@@ -96,8 +96,8 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     if (sum % 100 == 0)
                         session.executeAsync(boundStatement);
 
-                    if (sum% 10000 == 0)
-                        System.out.println("Num allowed for token range " + getTokenRange() + ": " + getSum());
+                    if (sum % 10000 == 0)
+                        System.out.println("Num allowed for token range " + getTokenRange() + ": " + sum);
                 }
             }
             lastId = 0;
