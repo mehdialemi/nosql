@@ -77,8 +77,6 @@ public class CassandraClient {
         Metadata metadata = cluster.getMetadata();
         Set<Host> allHosts = cluster.getMetadata().getAllHosts();
 
-//        String hostAddress = InetAddress.getLocalHost().getHostAddress();
-//        System.out.println("Current host address: " + hostAddress);
         List<Future<TokenRangeDeletes>> futures = new ArrayList<>();
 
         Set<TokenRange> allTokenRanges = metadata.getTokenRanges();
@@ -134,7 +132,10 @@ public class CassandraClient {
                 TokenRangeDeletes result = future.get();
                 if (result.getLastId() != 0) {
                     tokenRangeQueue.add(result.getTokenRange());
+                    System.out.println("Readding token range: " + result.getTokenRange() + ", sum: " + result.getSum());
                 }
+                System.out.println("Completed delete for token range: " + result.getTokenRange() +
+                        ", sum: " + result.getSum());
             }
         }
     }

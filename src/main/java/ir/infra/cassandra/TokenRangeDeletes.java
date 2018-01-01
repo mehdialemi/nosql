@@ -23,6 +23,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
     private final TokenRange tokenRange;
     private final long ts;
     private long lastId;
+    private int sum = 0;
 
     /**
      * Constructor to receive delete token range parameter
@@ -39,10 +40,10 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
 
     @Override
     public TokenRangeDeletes call() throws Exception {
+
         PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
                 " USING TIMESTAMP ? WHERE emsinfoid = ? ");
 
-        int sum = 0;
         List<Select> selects = new ArrayList<>();
         long start = (long) getTokenRange().getStart().getValue();
         long end = (long) getTokenRange().getEnd().getValue();
@@ -84,15 +85,19 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                 System.out.println("Executing query: " + select);
                 ResultSet rows = session.execute(select);
 
+                BatchStatement batchStatement = new BatchStatement();
                 for (Row row : rows) {
                     Long id = row.get(ID, Long.class);
                     lastId = id;
                     BoundStatement boundStatement = prepare.bind(ts, id);
-                    session.executeAsync(boundStatement);
-                    sum++;
+                    batchStatement.add(boundStatement);
 
-                    if (sum % 1000 == 0)
-                        System.out.println("Num allowed for token range " + getTokenRange() + ": " + sum);
+                    sum = sum + 1;
+                    if (sum % 100 == 0)
+                        session.executeAsync(boundStatement);
+
+                    if (sum% 10000 == 0)
+                        System.out.println("Num allowed for token range " + getTokenRange() + ": " + getSum());
                 }
             }
             lastId = 0;
@@ -109,5 +114,9 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
 
     public TokenRange getTokenRange() {
         return tokenRange;
+    }
+
+    public int getSum() {
+        return sum;
     }
 }
