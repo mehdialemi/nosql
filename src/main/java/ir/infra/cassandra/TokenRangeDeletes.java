@@ -84,6 +84,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
         }
 
         lastId = start;
+        int ignore = 0;
         try {
             for (Select select : selects) {
                 System.out.println("Executing query: " + select);
@@ -94,8 +95,10 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     Long id = row.get(ID, Long.class);
                     long ws = row.get(WT, Long.class);
 
-                    if (ws > ts)
+                    if (ws > ts) {
+                        ignore ++;
                         continue;
+                    }
 
                     lastId = id;
                     BoundStatement boundStatement = prepare.bind(id);
@@ -114,6 +117,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
             System.out.println("Incomplete delete for token range: " + getTokenRange());
         }
 
+        System.out.println("Ignore: " + ignore);
         return this;
     }
 
