@@ -105,10 +105,10 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     batchStatement.add(boundStatement);
 
                     sum = sum + 1;
-                    if (sum % 100 == 0)
+                    if (sum % 50 == 0)
                         session.executeAsync(boundStatement);
 
-                    if (sum % 10000 == 0)
+                    if (sum % 1000 == 0)
                         System.out.println("Num allowed for token range " + getTokenRange() + ": " + sum);
                 }
             }
