@@ -21,7 +21,7 @@ public class ClusterConf {
 
     private int old_allowed_sec;
 
-    private int threadPerHost;
+    private int threadPerHost = 1;
 
     @JsonProperty
     public String getZkAddress() {

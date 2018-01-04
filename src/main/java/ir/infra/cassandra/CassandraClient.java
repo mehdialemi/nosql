@@ -75,6 +75,7 @@ public class CassandraClient {
         long tsMiS = (System.currentTimeMillis() - conf.getOld_allowed_sec() * 1000) * 1000;
 
         Metadata metadata = cluster.getMetadata();
+
         Set<Host> allHosts = cluster.getMetadata().getAllHosts();
 
         List<Future<TokenRangeDeletes>> futures = new ArrayList<>();
@@ -128,6 +129,7 @@ public class CassandraClient {
                 futures.add(future);
             }
 
+            int num = 0;
             for (Future<TokenRangeDeletes> future : futures) {
                 TokenRangeDeletes result = future.get();
                 if (result.getLastId() != 0) {
@@ -136,7 +138,10 @@ public class CassandraClient {
                 }
                 System.out.println("Completed delete for token range: " + result.getTokenRange() +
                         ", sum: " + result.getSum());
+                num += result.getSum();
             }
+
+            System.out.println("All old allowed rows are deleted, num: " + num);
         }
     }
 

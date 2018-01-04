@@ -19,6 +19,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
 
     public static final String ID = "emsinfoid";
     public static final String ALLOWED = "allowed";
+    public static final String WT = "WT";
     private final Session session;
     private final TokenRange tokenRange;
     private final long ts;
@@ -42,7 +43,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
     public TokenRangeDeletes call() throws Exception {
 
         PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
-                " USING TIMESTAMP ? WHERE emsinfoid = ? ");
+                " WHERE emsinfoid = ? ");
 
         List<Select> selects = new ArrayList<>();
         long start = (long) getTokenRange().getStart().getValue();
@@ -54,6 +55,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
         if (start > end) {
             Select select = QueryBuilder.select()
                     .column(ID)
+                    .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
                     .where(gt(token(ID), token(start)))
                     .and(eq(ALLOWED, true))
@@ -62,6 +64,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
 
             select = QueryBuilder.select()
                     .column(ID)
+                    .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
                     .where(lt(token(ID), token(end)))
                     .and(eq(ALLOWED, true))
@@ -71,6 +74,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
         } else {
             Select select = QueryBuilder.select()
                     .column(ID)
+                    .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
                     .where(gt(token(ID), token(start)))
                     .and(lt(token(ID), token(end)))
@@ -88,8 +92,13 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                 BatchStatement batchStatement = new BatchStatement();
                 for (Row row : rows) {
                     Long id = row.get(ID, Long.class);
+                    long ws = row.get(WT, Long.class);
+
+                    if (ws > ts)
+                        continue;
+
                     lastId = id;
-                    BoundStatement boundStatement = prepare.bind(ts, id);
+                    BoundStatement boundStatement = prepare.bind(id);
                     batchStatement.add(boundStatement);
 
                     sum = sum + 1;
