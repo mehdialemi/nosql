@@ -103,12 +103,19 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     batchStatement.add(boundStatement);
 
                     sum = sum + 1;
-                    if (sum % 50 == 0)
-                        session.execute(boundStatement);
+                    if (sum % 50 == 0) {
+                        session.execute(batchStatement);
+                        batchStatement.clear();
+                    }
 
                     if (sum % 1000 == 0)
                         System.out.println("Num deletes for token range " + getTokenRange() + ": " + sum);
                 }
+
+                if (batchStatement.size() > 0) {
+                    session.execute(batchStatement);
+                }
+
             }
             System.out.println("Ignore: " + ignore);
             lastId = 0;
