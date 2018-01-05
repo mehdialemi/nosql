@@ -98,7 +98,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     }
 
                     BoundStatement boundStatement = prepare.bind(id);
-                    session.execute(boundStatement);
+                    session.executeAsync(boundStatement);
                     sum = sum + 1;
                     lastId = id;
 
