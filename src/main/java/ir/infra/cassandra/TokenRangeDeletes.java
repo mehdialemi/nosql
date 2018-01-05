@@ -110,7 +110,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
             System.out.println("Ignore: " + ignore);
             lastId = 0;
         } catch (Exception e) {
-            System.out.println("Incomplete delete for token range: " + getTokenRange());
+            System.out.println("Incomplete delete for token range: " + getTokenRange() + ", errorMsg: " + e.getMessage());
         }
 
         return this;

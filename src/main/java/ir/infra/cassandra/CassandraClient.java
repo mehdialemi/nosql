@@ -138,7 +138,6 @@ public class CassandraClient {
                 TokenRangeDeletes result = future.get();
                 if (result.getLastId() != 0) {
                     tokenRangeQueue.add(result.getTokenRange());
-                    System.out.println("Readding token range: " + result.getTokenRange() + ", sum: " + result.getSum());
                 } else {
                     System.out.println("Completed delete for token range: " + result.getTokenRange() +
                             ", sum: " + result.getSum());
