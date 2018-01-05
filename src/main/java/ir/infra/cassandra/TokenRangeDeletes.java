@@ -43,7 +43,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
 
     @Override
     public TokenRangeDeletes call() throws Exception {
-        List<Select> selects = new ArrayList<>();
+        List<Statement> statements = new ArrayList<>();
         long start = (long) getTokenRange().getStart().getValue();
         long end = (long) getTokenRange().getEnd().getValue();
 
@@ -51,51 +51,43 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
             start = lastId;
 
         if (start > end) {
-            Select select = QueryBuilder.select()
-                    .column(ID)
+            Statement st = QueryBuilder.select()
+                    .column(ID).column(ALLOWED)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
-                    .where(gt(ID, start))
-                    .and(eq(ALLOWED, true))
-                    .allowFiltering();
-            selects.add(select);
+                    .where(gt(token(ID), token(start)));
+            statements.add(st);
 
-            select = QueryBuilder.select()
-                    .column(ID)
+            st = QueryBuilder.select()
+                    .column(ID).column(ALLOWED)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
-                    .where(lt(ID, end))
-                    .and(eq(ALLOWED, true))
-                    .allowFiltering();
-            selects.add(select);
+                    .where(lt(token(ID), token(end)));
+            statements.add(st);
 
         } else {
-            Select select = QueryBuilder.select()
-                    .column(ID)
+            Statement st = QueryBuilder.select()
+                    .column(ID).column(ALLOWED)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
-                    .where(gt(ID, start))
-                    .and(lt(ID, end))
-                    .and(eq(ALLOWED, true))
-                    .allowFiltering();
-            selects.add(select);
+                    .where(gt(token(ID), token(start)))
+                    .and(lt(token(ID), token(end)));
+            statements.add(st);
         }
 
         lastId = start;
         int ignore = 0;
         try {
-            for (Select select : selects) {
-//                System.out.println("Executing query: " + select);
+            for (Statement select : statements) {
                 ResultSet rows = session.execute(select);
 
                 for (Row row : rows) {
                     Long id = row.get(ID, Long.class);
                     long ws = row.get(WT, Long.class);
+                    boolean allowed = row.get(ALLOWED, Boolean.class);
 
-                    if (ws > ts) {
-                        ignore++;
+                    if (!allowed || ws > ts)
                         continue;
-                    }
 
                     BoundStatement boundStatement = prepare.bind(id);
                     session.executeAsync(boundStatement);
