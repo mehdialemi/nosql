@@ -88,41 +88,30 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
 //                System.out.println("Executing query: " + select);
                 ResultSet rows = session.execute(select);
 
-                BatchStatement batchStatement = new BatchStatement();
                 for (Row row : rows) {
                     Long id = row.get(ID, Long.class);
                     long ws = row.get(WT, Long.class);
 
                     if (ws > ts) {
-                        ignore ++;
+                        ignore++;
                         continue;
                     }
 
-                    lastId = id;
                     BoundStatement boundStatement = prepare.bind(id);
-                    batchStatement.add(boundStatement);
-
+                    session.execute(boundStatement);
                     sum = sum + 1;
-                    if (sum % 50 == 0) {
-                        session.execute(batchStatement);
-                        batchStatement.clear();
-                    }
+                    lastId = id;
 
                     if (sum % 1000 == 0)
                         System.out.println("Num deletes for token range " + getTokenRange() + ": " + sum);
                 }
-
-                if (batchStatement.size() > 0) {
-                    session.execute(batchStatement);
-                }
-
             }
+
             System.out.println("Ignore: " + ignore);
             lastId = 0;
         } catch (Exception e) {
             System.out.println("Incomplete delete for token range: " + getTokenRange());
         }
-
 
         return this;
     }
