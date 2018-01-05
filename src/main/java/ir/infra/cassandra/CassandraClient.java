@@ -118,14 +118,18 @@ public class CassandraClient {
 
         } while (!finish);
 
+
+        PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
+                " WHERE emsinfoid = ? ");
+
         while (tokenRangeQueue.size() != 0) {
             System.out.println("All tokens: " + tokenRangeQueue.size());
 
             while (tokenRangeQueue.size() != 0) {
                 TokenRange tokenRange = tokenRangeQueue.remove();
-                System.out.println("Deleting old rows token range: " + tokenRange);
+//                System.out.println("Deleting old rows token range: " + tokenRange);
                 Future<TokenRangeDeletes> future = executorService.submit(
-                        new TokenRangeDeletes(session, tokenRange, tsMiS));
+                        new TokenRangeDeletes(session, prepare, tokenRange, tsMiS));
                 futures.add(future);
             }
 

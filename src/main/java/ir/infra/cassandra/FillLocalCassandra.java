@@ -11,7 +11,7 @@ public class FillLocalCassandra {
         conf.setEnable_test(false);
         CassandraClient cassandraClient = new CassandraClient(conf);
 
-        for (int i = 0 ; i < 1000; i ++) {
+        for (int i = 0 ; i < 10; i ++) {
             System.out.println("Writing item: " + (i + 1));
             cassandraClient.add(RandomEmsInfoGenerator.randomEmsInfo());
             Thread.sleep(300);

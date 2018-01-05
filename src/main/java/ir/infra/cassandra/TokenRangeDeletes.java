@@ -21,6 +21,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
     public static final String ALLOWED = "allowed";
     public static final String WT = "WT";
     private final Session session;
+    private PreparedStatement prepare;
     private final TokenRange tokenRange;
     private final long ts;
     private long lastId;
@@ -33,18 +34,15 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
      * @param tokenRange range of token for host
      * @param ts         timestamp in micro second to delete old rows with field allowed = true
      */
-    public TokenRangeDeletes(final Session session, final TokenRange tokenRange, final long ts) {
+    public TokenRangeDeletes(final Session session, PreparedStatement prepare, final TokenRange tokenRange, final long ts) {
         this.session = session;
+        this.prepare = prepare;
         this.tokenRange = tokenRange;
         this.ts = ts;
     }
 
     @Override
     public TokenRangeDeletes call() throws Exception {
-
-        PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
-                " WHERE emsinfoid = ? ");
-
         List<Select> selects = new ArrayList<>();
         long start = (long) getTokenRange().getStart().getValue();
         long end = (long) getTokenRange().getEnd().getValue();
@@ -57,7 +55,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     .column(ID)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
-                    .where(gt(token(ID), token(start)))
+                    .where(gt(ID, start))
                     .and(eq(ALLOWED, true))
                     .allowFiltering();
             selects.add(select);
@@ -66,7 +64,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     .column(ID)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
-                    .where(lt(token(ID), token(end)))
+                    .where(lt(ID, end))
                     .and(eq(ALLOWED, true))
                     .allowFiltering();
             selects.add(select);
@@ -76,8 +74,8 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     .column(ID)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
-                    .where(gt(token(ID), token(start)))
-                    .and(lt(token(ID), token(end)))
+                    .where(gt(ID, start))
+                    .and(lt(ID, end))
                     .and(eq(ALLOWED, true))
                     .allowFiltering();
             selects.add(select);
@@ -87,7 +85,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
         int ignore = 0;
         try {
             for (Select select : selects) {
-                System.out.println("Executing query: " + select);
+//                System.out.println("Executing query: " + select);
                 ResultSet rows = session.execute(select);
 
                 BatchStatement batchStatement = new BatchStatement();
@@ -106,10 +104,10 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
 
                     sum = sum + 1;
                     if (sum % 50 == 0)
-                        session.executeAsync(boundStatement);
+                        session.execute(boundStatement);
 
                     if (sum % 1000 == 0)
-                        System.out.println("Num allowed for token range " + getTokenRange() + ": " + sum);
+                        System.out.println("Num deletes for token range " + getTokenRange() + ": " + sum);
                 }
             }
             lastId = 0;
