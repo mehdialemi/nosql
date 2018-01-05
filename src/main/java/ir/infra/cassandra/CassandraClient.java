@@ -122,8 +122,8 @@ public class CassandraClient {
         PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
                 " WHERE emsinfoid = ? ");
 
+        System.out.println("All tokens: " + tokenRangeQueue.size());
         while (tokenRangeQueue.size() != 0) {
-            System.out.println("All tokens: " + tokenRangeQueue.size());
 
             while (tokenRangeQueue.size() != 0) {
                 TokenRange tokenRange = tokenRangeQueue.remove();
@@ -139,10 +139,11 @@ public class CassandraClient {
                 if (result.getLastId() != 0) {
                     tokenRangeQueue.add(result.getTokenRange());
                     System.out.println("Readding token range: " + result.getTokenRange() + ", sum: " + result.getSum());
+                } else {
+                    System.out.println("Completed delete for token range: " + result.getTokenRange() +
+                            ", sum: " + result.getSum());
+                    num += result.getSum();
                 }
-                System.out.println("Completed delete for token range: " + result.getTokenRange() +
-                        ", sum: " + result.getSum());
-                num += result.getSum();
             }
 
             System.out.println("All old allowed rows are deleted, num: " + num);
