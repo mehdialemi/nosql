@@ -59,23 +59,23 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     .column(ID).column(ALLOWED)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
-                    .where(gt(token(ID), token(start)));
+                    .where(gt(token(ID), start));
             statements.add(st);
 
-            
+
             st = QueryBuilder.select()
                     .column(ID).column(ALLOWED)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
-                    .where(lt(token(ID), token(end)));
+                    .where(lt(token(ID), end));
             statements.add(st);
         } else {
             Statement st = QueryBuilder.select()
                     .column(ID).column(ALLOWED)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
-                    .where(gt(token(ID), token(start)))
-                    .and(lt(token(ID), token(end)));
+                    .where(gt(token(ID), start))
+                    .and(lt(token(ID), end));
             statements.add(st);
         }
 
