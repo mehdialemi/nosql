@@ -45,7 +45,7 @@ public class CassandraClient {
         cluster.getConfiguration().getCodecRegistry()
                 .register(InstantCodec.instance);
 
-        cluster.getConfiguration().getQueryOptions().setFetchSize(100);
+        cluster.getConfiguration().getQueryOptions().setFetchSize(2000);
 
         cluster.init();
 
@@ -92,6 +92,10 @@ public class CassandraClient {
         int scanned = 0;
         ResultSet rows = session.execute(select);
         for (Row row : rows) {
+
+            if (rows.getAvailableWithoutFetching() == 100 && !rows.isFullyFetched())
+                rows.fetchMoreResults();
+
             Long id = row.get(ID, Long.class);
             long ws = row.get(WT, Long.class);
 //            boolean allowed = row.get(ALLOWED, Boolean.class);
