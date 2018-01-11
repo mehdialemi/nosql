@@ -25,6 +25,7 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
     private final long ts;
     private long lastId;
     private int sum = 0;
+    private int scanned = 0;
 
     /**
      * Constructor to receive delete token range parameter
@@ -81,6 +82,13 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                 ResultSet rows = session.execute(select);
 
                 for (Row row : rows) {
+                    scanned ++;
+                    if (scanned % 10000 == 0)
+                        System.out.println("scanned: " + scanned);
+
+                    if (rows.getAvailableWithoutFetching() == 100 && !rows.isFullyFetched())
+                        rows.fetchMoreResults();
+
                     Long id = row.get(ID, Long.class);
                     long ws = row.get(WT, Long.class);
                     boolean allowed = row.get(ALLOWED, Boolean.class);

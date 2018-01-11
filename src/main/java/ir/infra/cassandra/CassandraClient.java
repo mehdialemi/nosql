@@ -80,9 +80,10 @@ public class CassandraClient {
         long ts = (System.currentTimeMillis() - conf.getOld_allowed_sec() * 1000) * 1000;
 
         Select select = QueryBuilder.select()
-                .column(ID).writeTime(ALLOWED).as(WT)
-                .from(Constants.KEY_SPACE, Constants.TABLE)
-                .where(eq(ALLOWED, true)).allowFiltering();
+                .column(ID)
+                .writeTime(ALLOWED).as(WT)
+                .column(ALLOWED)
+                .from(Constants.KEY_SPACE, Constants.TABLE);
 
         int numDeletes = 0;
         PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
@@ -98,11 +99,13 @@ public class CassandraClient {
 
             Long id = row.get(ID, Long.class);
             long ws = row.get(WT, Long.class);
-//            boolean allowed = row.get(ALLOWED, Boolean.class);
+            boolean allowed = row.get(ALLOWED, Boolean.class);
             scanned ++;
+            if (scanned % 10000 == 0)
+                System.out.println("scanned: " + scanned);
 
-//            if (!allowed || ws > ts)
-            if (ws > ts)
+//            if (ws > ts)
+            if (!allowed || ws > ts)
                 continue;
 
             BoundStatement statement = prepare.bind(id);
@@ -119,7 +122,7 @@ public class CassandraClient {
             }
         }
 
-        session.execute(batchStatement);
+        session.executeAsync(batchStatement);
 
         System.out.println("All deletes sends, num deletes: " + numDeletes);
     }
