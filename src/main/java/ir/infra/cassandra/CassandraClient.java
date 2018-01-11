@@ -86,6 +86,8 @@ public class CassandraClient {
         int numDeletes = 0;
         PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
                 " WHERE emsinfoid = ? ");
+        BatchStatement batchStatement = new BatchStatement();
+
         ResultSet rows = session.execute(select);
         for (Row row : rows) {
             Long id = row.get(ID, Long.class);
@@ -96,12 +98,18 @@ public class CassandraClient {
                 continue;
 
             BoundStatement statement = prepare.bind(id);
-            session.executeAsync(statement);
+            batchStatement.add(statement);
             numDeletes = numDeletes + 1;
 
+            if (numDeletes % 100 == 0) {
+                session.executeAsync(batchStatement);
+                batchStatement.clear();
+            }
             if (numDeletes % 1000 == 0)
                 System.out.println("Num sent deletes: " + numDeletes);
         }
+
+        session.executeAsync(batchStatement);
 
         System.out.println("All deletes sends, num deletes: " + numDeletes);
     }
