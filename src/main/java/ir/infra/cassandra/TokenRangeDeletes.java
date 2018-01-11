@@ -2,7 +2,6 @@ package ir.infra.cassandra;
 
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
-import com.datastax.driver.core.querybuilder.Select;
 import ir.infra.core.Constants;
 
 import java.util.ArrayList;
@@ -58,13 +57,13 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
                     .where(gt(token(ID), token(start)));
             statements.add(st);
 
+            
             st = QueryBuilder.select()
                     .column(ID).column(ALLOWED)
                     .writeTime(ALLOWED).as(WT)
                     .from(Constants.KEY_SPACE, Constants.TABLE)
                     .where(lt(token(ID), token(end)));
             statements.add(st);
-
         } else {
             Statement st = QueryBuilder.select()
                     .column(ID).column(ALLOWED)

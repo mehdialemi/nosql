@@ -2,6 +2,8 @@ package ir.infra.cassandra;
 
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.policies.ConstantReconnectionPolicy;
+import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.extras.codecs.joda.InstantCodec;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
@@ -11,10 +13,11 @@ import ir.infra.tables.EmsInfo;
 
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+
+import static com.datastax.driver.core.querybuilder.QueryBuilder.gt;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.token;
 
 /**
  * Cassandra client to insert objects into the cassandra cluster.
@@ -22,6 +25,9 @@ import java.util.concurrent.Future;
  * {@link MappingManager} class utility.
  */
 public class CassandraClient {
+    public static final String ID = "emsinfoid";
+    public static final String ALLOWED = "allowed";
+    public static final String WT = "WT";
 
     private final Session session;
     Mapper<EmsInfo> emsInfoMapper;
@@ -70,7 +76,37 @@ public class CassandraClient {
         return emsInfoMapper.get(id);
     }
 
-    public void deleteOldAllowed() throws ExecutionException, InterruptedException, UnknownHostException {
+    public void deleteOldAllowed() {
+        long ts = (System.currentTimeMillis() - conf.getOld_allowed_sec() * 1000) * 1000;
+        Select select = QueryBuilder.select()
+                .column(ID).column(ALLOWED)
+                .writeTime(ALLOWED).as(WT)
+                .from(Constants.KEY_SPACE, Constants.TABLE);
+
+        int numDeletes = 0;
+        PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
+                " WHERE emsinfoid = ? ");
+        ResultSet rows = session.execute(select);
+        for (Row row : rows) {
+            Long id = row.get(ID, Long.class);
+            long ws = row.get(WT, Long.class);
+            boolean allowed = row.get(ALLOWED, Boolean.class);
+
+            if (!allowed || ws > ts)
+                continue;
+
+            BoundStatement statement = prepare.bind(id);
+            session.executeAsync(statement);
+            numDeletes = numDeletes + 1;
+
+            if (numDeletes % 1000 == 0)
+                System.out.println("Num sent deletes: " + numDeletes);
+        }
+
+        System.out.println("All deletes sends, num deletes: " + numDeletes);
+    }
+
+    public void deleteOldAllowedParallel() throws ExecutionException, InterruptedException, UnknownHostException {
 
         long tsMiS = (System.currentTimeMillis() - conf.getOld_allowed_sec() * 1000) * 1000;
 
