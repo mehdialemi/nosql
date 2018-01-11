@@ -13,11 +13,11 @@ import ir.infra.tables.EmsInfo;
 
 import java.net.UnknownHostException;
 import java.util.*;
-import java.util.concurrent.*;
-
-import static com.datastax.driver.core.querybuilder.QueryBuilder.gt;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.token;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Cassandra client to insert objects into the cassandra cluster.
@@ -179,6 +179,8 @@ public class CassandraClient {
         PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
                 " WHERE emsinfoid = ? ");
 
+        AtomicInteger globalScanned = new AtomicInteger(0);
+        AtomicInteger globalDeletes = new AtomicInteger(0);
         System.out.println("All tokens: " + tokenRangeQueue.size());
         while (tokenRangeQueue.size() != 0) {
 
@@ -186,23 +188,21 @@ public class CassandraClient {
                 TokenRange tokenRange = tokenRangeQueue.remove();
 //                System.out.println("Deleting old rows token range: " + tokenRange);
                 Future<TokenRangeDeletes> future = executorService.submit(
-                        new TokenRangeDeletes(session, prepare, tokenRange, tsMiS));
+                        new TokenRangeDeletes(session, prepare, tokenRange, tsMiS, globalScanned, globalDeletes));
                 futures.add(future);
             }
 
-            int num = 0;
             for (Future<TokenRangeDeletes> future : futures) {
                 TokenRangeDeletes result = future.get();
                 if (result.getLastId() != 0) {
                     tokenRangeQueue.add(result.getTokenRange());
                 } else {
-                    System.out.println("Completed delete for token range: " + result.getTokenRange() +
-                            ", sum: " + result.getSum());
-                    num += result.getSum();
+                    System.out.println("Completed delete for token range: " + result.getTokenRange());
                 }
             }
 
-            System.out.println("All old allowed rows are deleted, num: " + num);
+            System.out.println("All old allowed rows are deleted, scanned: " + globalScanned.intValue() +
+                    ", deletes: " + globalDeletes.intValue());
         }
     }
 

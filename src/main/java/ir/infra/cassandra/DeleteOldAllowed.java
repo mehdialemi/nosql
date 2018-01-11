@@ -15,7 +15,7 @@ public class DeleteOldAllowed {
         conf.setEnable_test(false);
         CassandraClient cassandraClient = new CassandraClient(conf);
 
-        cassandraClient.deleteOldAllowed();
+        cassandraClient.deleteOldAllowedParallel();
 
         cassandraClient.close();
     }

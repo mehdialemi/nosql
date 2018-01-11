@@ -7,6 +7,7 @@ import ir.infra.core.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.*;
 
@@ -23,9 +24,9 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
     private PreparedStatement prepare;
     private final TokenRange tokenRange;
     private final long ts;
+    private AtomicInteger globalScanned;
+    private AtomicInteger globalDeletes;
     private long lastId;
-    private int sum = 0;
-    private int scanned = 0;
 
     /**
      * Constructor to receive delete token range parameter
@@ -34,11 +35,14 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
      * @param tokenRange range of token for host
      * @param ts         timestamp in micro second to delete old rows with field allowed = true
      */
-    public TokenRangeDeletes(final Session session, PreparedStatement prepare, final TokenRange tokenRange, final long ts) {
+    public TokenRangeDeletes(final Session session, PreparedStatement prepare, final TokenRange tokenRange,
+                             final long ts, AtomicInteger globalScanned, AtomicInteger globalDeletes) {
         this.session = session;
         this.prepare = prepare;
         this.tokenRange = tokenRange;
         this.ts = ts;
+        this.globalScanned = globalScanned;
+        this.globalDeletes = globalDeletes;
     }
 
     @Override
@@ -76,15 +80,14 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
         }
 
         lastId = start;
-        int ignore = 0;
         try {
             for (Statement select : statements) {
                 ResultSet rows = session.execute(select);
 
                 for (Row row : rows) {
-                    scanned ++;
-                    if (scanned % 10000 == 0)
-                        System.out.println("scanned: " + scanned);
+                    int globalScanned = this.globalScanned.incrementAndGet();
+                    if (globalScanned % 10000 == 0)
+                        System.out.println("scanned: " + globalScanned + ", deletes: " + globalDeletes.intValue());
 
                     if (rows.getAvailableWithoutFetching() == 100 && !rows.isFullyFetched())
                         rows.fetchMoreResults();
@@ -98,15 +101,11 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
 
                     BoundStatement boundStatement = prepare.bind(id);
                     session.executeAsync(boundStatement);
-                    sum = sum + 1;
+                    globalDeletes.incrementAndGet();
                     lastId = id;
-
-                    if (sum % 1000 == 0)
-                        System.out.println("Num deletes for token range " + getTokenRange() + ": " + sum);
                 }
             }
 
-            System.out.println("Ignore: " + ignore);
             lastId = 0;
         } catch (Exception e) {
             System.out.println("Incomplete delete for token range: " + getTokenRange() + ", errorMsg: " + e.getMessage());
@@ -121,9 +120,5 @@ public class TokenRangeDeletes implements Callable<TokenRangeDeletes> {
 
     public TokenRange getTokenRange() {
         return tokenRange;
-    }
-
-    public int getSum() {
-        return sum;
     }
 }
