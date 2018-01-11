@@ -78,38 +78,44 @@ public class CassandraClient {
 
     public void deleteOldAllowed() {
         long ts = (System.currentTimeMillis() - conf.getOld_allowed_sec() * 1000) * 1000;
+
         Select select = QueryBuilder.select()
-                .column(ID).column(ALLOWED)
-                .writeTime(ALLOWED).as(WT)
-                .from(Constants.KEY_SPACE, Constants.TABLE);
+                .column(ID).writeTime(ALLOWED).as(WT)
+                .from(Constants.KEY_SPACE, Constants.TABLE)
+                .where(eq(ALLOWED, true)).allowFiltering();
 
         int numDeletes = 0;
         PreparedStatement prepare = session.prepare("DELETE FROM traffic.emsinfo" +
                 " WHERE emsinfoid = ? ");
-        BatchStatement batchStatement = new BatchStatement();
 
+        BatchStatement batchStatement = new BatchStatement();
+        int scanned = 0;
         ResultSet rows = session.execute(select);
         for (Row row : rows) {
             Long id = row.get(ID, Long.class);
             long ws = row.get(WT, Long.class);
-            boolean allowed = row.get(ALLOWED, Boolean.class);
+//            boolean allowed = row.get(ALLOWED, Boolean.class);
+            scanned ++;
 
-            if (!allowed || ws > ts)
+//            if (!allowed || ws > ts)
+            if (ws > ts)
                 continue;
 
             BoundStatement statement = prepare.bind(id);
             batchStatement.add(statement);
-            numDeletes = numDeletes + 1;
+            numDeletes ++;
 
-            if (numDeletes % 100 == 0) {
-                session.executeAsync(batchStatement);
+            if (numDeletes % 50 == 0) {
+                session.execute(batchStatement);
                 batchStatement.clear();
             }
-            if (numDeletes % 1000 == 0)
-                System.out.println("Num sent deletes: " + numDeletes);
+
+            if (numDeletes % 1000 == 0) {
+                System.out.println("Scanned: " + scanned + ", Deletes: " + numDeletes);
+            }
         }
 
-        session.executeAsync(batchStatement);
+        session.execute(batchStatement);
 
         System.out.println("All deletes sends, num deletes: " + numDeletes);
     }
