@@ -106,7 +106,7 @@ public class CassandraClient {
             numDeletes ++;
 
             if (numDeletes % 50 == 0) {
-                session.execute(batchStatement);
+                session.executeAsync(batchStatement);
                 batchStatement.clear();
             }
 
